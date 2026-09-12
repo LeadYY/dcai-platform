@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OPC商学院 · 报名缴费小程序</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;}
+body{background:#F7F8FA;min-height:100vh;padding-bottom:68px;}
+.app{max-width:480px;margin:0 auto;min-height:100vh;background:#F7F8FA;position:relative;}
+
+/* ---- 顶部导航栏 ---- */
+.navbar{position:sticky;top:0;z-index:100;background:#fff;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;box-shadow:0 1px 6px rgba(0,0,0,.05);}
+.navbar .brand{font-size:17px;font-weight:700;color:#C41E3A;display:flex;align-items:center;gap:6px;}
+.navbar .brand i{font-style:normal;width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#C41E3A,#E85A70);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.navbar .search{flex:1;margin-left:12px;background:#F2F3F5;border-radius:18px;height:34px;display:flex;align-items:center;padding:0 12px;color:#999;font-size:13px;}
+
+/* ---- Banner ---- */
+.banner{background:linear-gradient(135deg,#C41E3A 0%,#E85A70 60%,#F08AA0 100%);padding:26px 22px 30px;color:#fff;border-radius:0 0 24px 24px;position:relative;overflow:hidden;}
+.banner::after{content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.12);}
+.banner::before{content:'';position:absolute;right:30px;bottom:-60px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.08);}
+.banner h1{font-size:24px;font-weight:800;margin-bottom:8px;position:relative;z-index:1;}
+.banner p{font-size:13px;opacity:.92;line-height:1.7;position:relative;z-index:1;max-width:75%;}
+.banner .steps{display:flex;gap:6px;margin-top:16px;position:relative;z-index:1;flex-wrap:wrap;}
+.banner .step{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:3px 10px;font-size:11px;}
+
+/* ---- 顶部轮播图 ---- */
+.swiper{position:relative;overflow:hidden;}
+.swiper-track{display:flex;transition:transform .45s cubic-bezier(.4,0,.2,1);}
+.swiper-slide{min-width:100%;position:relative;overflow:hidden;}
+.swiper-slide .slide-bg{width:100%;height:200px;object-fit:cover;display:block;}
+.swiper-slide .slide-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,10,10,.05) 0%,rgba(20,10,10,.15) 45%,rgba(15,8,8,.78) 100%);}
+.swiper-slide .slide-content{position:absolute;left:0;right:0;bottom:0;padding:16px 20px 34px;color:#fff;z-index:2;}
+.swiper-slide .slide-tag{display:inline-block;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.3);border-radius:12px;padding:2px 10px;font-size:11px;margin-bottom:8px;backdrop-filter:blur(4px);}
+.swiper-slide .slide-title{font-size:21px;font-weight:800;line-height:1.35;margin-bottom:5px;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+.swiper-slide .slide-sub{font-size:12px;opacity:.92;line-height:1.6;text-shadow:0 1px 4px rgba(0,0,0,.3);}
+.swiper-slide .slide-price{font-size:16px;font-weight:800;margin-top:8px;color:#FFE1A8;}
+.swiper-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:3;}
+.swiper-dots i{width:6px;height:6px;border-radius:4px;background:rgba(255,255,255,.45);transition:all .3s;}
+.swiper-dots i.on{width:18px;background:#fff;}
+.swiper-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);}
+.swiper-arrow.prev{left:10px;}
+.swiper-arrow.next{right:10px;}
+
+/* ---- Tab ---- */
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;box-shadow:0 -2px 12px rgba(0,0,0,.06);z-index:200;padding-bottom:env(safe-area-inset-bottom);}
+.tabbar .tab{flex:1;padding:8px 0 6px;text-align:center;color:#999;font-size:10px;cursor:pointer;}
+.tabbar .tab.active{color:#C41E3A;}
+.tabbar .tab .ico{font-size:21px;display:block;margin-bottom:2px;}
+
+/* ---- 内容 ---- */
+.page{display:none;padding:14px 14px 20px;}
+.page.active{display:block;}
+.page-title{font-size:15px;font-weight:700;color:#222;margin:6px 2px 12px;display:flex;align-items:center;gap:6px;}
+.page-title::before{content:'';width:3px;height:14px;background:#C41E3A;border-radius:2px;}
+
+/* ---- 课程列表 ---- */
+.course-list{display:flex;flex-direction:column;gap:14px;}
+.course-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(196,30,58,.07);cursor:pointer;border:1px solid #f4f0f0;transition:transform .18s,box-shadow .18s;}
+.course-card:active{transform:scale(.985);box-shadow:0 2px 8px rgba(196,30,58,.1);}
+.course-cover{height:130px;position:relative;display:flex;align-items:center;justify-content:center;font-size:42px;overflow:hidden;}
+.course-cover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(20,10,10,.28) 100%);pointer-events:none;}
+.course-cat{position:absolute;top:10px;left:10px;background:rgba(20,10,10,.45);color:#fff;font-size:11px;padding:3px 11px;border-radius:12px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.22);font-weight:600;letter-spacing:.5px;z-index:2;}
+.course-hot{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#FFB300,#FF8F00);color:#fff;font-size:10.5px;padding:3px 9px;border-radius:12px;font-weight:700;box-shadow:0 2px 6px rgba(255,143,0,.4);z-index:2;}
+.course-rating-pill{position:absolute;left:10px;bottom:8px;background:rgba(20,10,10,.55);color:#FFE1A8;font-size:11px;padding:2px 8px;border-radius:10px;backdrop-filter:blur(4px);font-weight:600;z-index:2;}
+.course-price-pill{position:absolute;right:10px;bottom:8px;color:#fff;font-size:16px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,.4);z-index:2;}
+.course-body{padding:12px 14px;}
+.course-name{font-size:16px;font-weight:700;color:#222;margin-bottom:5px;line-height:1.4;}
+.course-desc{font-size:12.5px;color:#888;line-height:1.6;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.course-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:#999;margin-bottom:10px;flex-wrap:wrap;}
+.course-price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.course-price{font-size:20px;font-weight:800;color:#C41E3A;}
+.course-price.free{color:#22C555;font-size:15px;}
+.enroll-btn{width:100%;background:linear-gradient(135deg,#C41E3A,#E85A70);color:#fff;border:none;padding:11px 0;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.enroll-btn:active{opacity:.85;}
+.enroll-btn:disabled{background:#ccc;}
+
+/* ---- 详情页 ---- */
+.detail-hero{background:#fff;border-radius:0 0 20px 20px;overflow:hidden;}
+.detail-cover{height:170px;position:relative;display:flex;align-items:center;justify-content:center;font-size:60px;}
+.detail-info{padding:16px;}
+.detail-name{font-size:19px;font-weight:800;color:#222;margin-bottom:8px;line-height:1.4;}
+.detail-tags{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.detail-tag{background:#FFF1F1;color:#C41E3A;font-size:12px;padding:4px 10px;border-radius:8px;}
+.detail-price-row{display:flex;align-items:center;justify-content:space-between;}
+.detail-price{font-size:24px;font-weight:800;color:#C41E3A;}
+.detail-price.free{color:#22C555;font-size:18px;}
+.detail-extra{font-size:12px;color:#999;}
+.section{background:#fff;border-radius:14px;padding:16px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);}
+.section h3{font-size:15px;font-weight:700;color:#222;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.section h3::before{content:'';width:3px;height:14px;background:#C41E3A;border-radius:2px;}
+.section p.desc{font-size:13px;color:#666;line-height:1.8;}
+.chapter{display:flex;align-items:center;padding:11px 0;border-bottom:1px dashed #f0f0f0;}
+.chapter:last-child{border-bottom:none;}
+.chapter .ch-num{width:26px;height:26px;border-radius:50%;background:#FFF1F1;color:#C41E3A;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;margin-right:12px;flex-shrink:0;}
+.chapter .ch-txt{flex:1;font-size:13.5px;color:#444;}
+.chapter .ch-dur{font-size:12px;color:#999;}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;display:flex;align-items:center;padding:10px 14px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -2px 12px rgba(0,0,0,.06);z-index:150;gap:12px;}
+.bottom-bar .bp-price{flex:1;}
+.bottom-bar .bp-price .p1{font-size:20px;font-weight:800;color:#C41E3A;}
+.bottom-bar .bp-price .p1.free{color:#22C555;font-size:16px;}
+.bottom-bar .bp-price .p2{font-size:11px;color:#999;}
+.bottom-bar .bp-btn{background:linear-gradient(135deg,#C41E3A,#E85A70);color:#fff;border:none;padding:12px 34px;border-radius:22px;font-size:15px;font-weight:700;cursor:pointer;}
+.bottom-bar .bp-btn:active{opacity:.85;}
+.back-btn{background:none;border:none;color:#fff;font-size:16px;cursor:pointer;padding:6px;}
+
+/* ---- 弹窗 ---- */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:none;align-items:flex-end;justify-content:center;overflow-y:auto;}
+.modal-overlay.show{display:flex;}
+.modal-box{background:#fff;width:100%;max-width:480px;border-radius:18px 18px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.15);overflow:hidden;animation:slideUp .3s ease;max-height:90vh;display:flex;flex-direction:column;}
+@keyframes slideUp{from{transform:translateY(40px);opacity:.6;}to{transform:translateY(0);opacity:1;}}
+.modal-head{background:#fff;padding:16px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #f5f5f5;}
+.modal-head h3{font-size:16px;font-weight:700;color:#222;}
+.modal-close{background:#F2F3F5;border:none;color:#666;width:30px;height:30px;border-radius:50%;font-size:18px;cursor:pointer;line-height:1;}
+.modal-body{padding:18px;overflow-y:auto;flex:1;}
+.modal-body label{display:block;font-size:12.5px;color:#666;margin:0 0 5px;font-weight:600;}
+.form-group{margin-bottom:14px;}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:14px;outline:none;transition:border .2s;background:#fafbfc;}
+.form-input:focus{border-color:#C41E3A;background:#fff;}
+.pay-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;}
+.pay-option{border:2px solid #eee;border-radius:12px;padding:12px;text-align:center;cursor:pointer;transition:all .2s;}
+.pay-option.active{border-color:#C41E3A;background:#FFF5F5;}
+.pay-option .pay-ico{font-size:24px;margin-bottom:4px;}
+.pay-option .pay-name{font-size:13px;font-weight:600;color:#333;}
+.pay-option.active .pay-name{color:#C41E3A;}
+.order-summary{background:#FFF7F7;border:1px solid #FECDD3;border-radius:12px;padding:14px 16px;margin-bottom:16px;}
+.order-summary .os-title{font-size:14px;font-weight:700;color:#222;margin-bottom:8px;}
+.order-summary .os-row{font-size:12.5px;color:#666;line-height:1.9;}
+.order-summary .os-row b{color:#333;}
+.modal-actions{display:flex;gap:10px;padding:14px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid #f0f0f0;background:#fff;}
+.modal-actions .btn{flex:1;padding:13px 0;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;border:none;}
+.btn-cancel{background:#f1f3f5;color:#555;}
+.btn-confirm{background:linear-gradient(135deg,#C41E3A,#E85A70);color:#fff;}
+.btn-confirm:active{transform:scale(.98);}
+
+/* ---- 成功 ---- */
+.success-wrap{text-align:center;padding:20px 10px 10px;}
+.success-ico{font-size:56px;margin-bottom:12px;}
+.success-title{font-size:20px;font-weight:700;color:#22C555;margin-bottom:6px;}
+.success-sub{font-size:12.5px;color:#999;margin-bottom:18px;}
+.success-card{background:#F6F7FB;border-radius:12px;padding:16px;text-align:left;margin-bottom:18px;line-height:2;font-size:13px;color:#444;}
+.success-card b{color:#222;}
+.success-done{background:linear-gradient(135deg,#C41E3A,#E85A70);color:#fff;border:none;padding:13px 46px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;}
+
+/* ---- 我的订单 ---- */
+.order-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);border:1px solid #f0f0f0;}
+.order-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.order-course{font-size:15px;font-weight:700;color:#222;}
+.order-status{font-size:12px;font-weight:700;}
+.status-paid{color:#22C555;}
+.status-booked{color:#F59E0B;}
+.order-info{font-size:12.5px;color:#666;line-height:1.9;}
+.order-info b{color:#333;}
+.order-amount{color:#C41E3A;font-weight:800;}
+.empty{text-align:center;padding:60px 20px;color:#bbb;}
+.empty .e-ico{font-size:50px;margin-bottom:12px;}
+.empty p{font-size:13px;}
+.login-hint{background:#FFF7F7;border:1px solid #FECDD3;border-radius:12px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:13px;color:#C41E3A;}
+.login-hint input{flex:1;padding:10px 12px;border:1.5px solid #FECDD3;border-radius:8px;font-size:14px;outline:none;}
+.login-hint button{background:#C41E3A;color:#fff;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+
+/* ---- toast ---- */
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:10px 22px;border-radius:10px;font-size:13.5px;z-index:2000;display:none;box-shadow:0 8px 24px rgba(0,0,0,.2);white-space:nowrap;}
+.toast.show{display:block;animation:fadeIn .3s;}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(-10px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- 顶部导航 -->
+  <div class="navbar">
+    <div class="brand"><i>OPC</i>OPC商学院</div>
+    <div class="search" onclick="goHome()">🔍 选课报名 · 跨境课程</div>
+  </div>
+
+  <!-- 首页 -->
+  <div class="page active" id="page-home">
+    <div class="swiper" id="topSwiper">
+      <div class="swiper-track" id="swiperTrack">
+        <!-- 幻灯片由 JS 动态生成：公司详情 + 热门课程 -->
+      </div>
+      <div class="swiper-dots" id="swiperDots"></div>
+      <div class="swiper-arrow prev" onclick="swipeTo(curSlide-1)">‹</div>
+      <div class="swiper-arrow next" onclick="swipeTo(curSlide+1)">›</div>
+    </div>
+    <div style="padding:16px 14px 0;">
+      <div class="page-title">在招课程</div>
+      <div class="course-list" id="courseList"></div>
+    </div>
+  </div>
+
+  <!-- 课程详情页 -->
+  <div class="page" id="page-detail">
+    <div style="position:relative;">
+      <button class="back-btn" style="position:absolute;top:8px;left:8px;z-index:10;color:#fff;background:rgba(0,0,0,.3);border-radius:50%;width:32px;height:32px;" onclick="goHome()">←</button>
+      <div id="detailBody"></div>
+    </div>
+    <div class="bottom-bar" id="detailBar"></div>
+  </div>
+
+  <!-- 我的订单 -->
+  <div class="page" id="page-orders">
+    <div style="padding:14px 14px 0;">
+      <div class="page-title">我的报名</div>
+      <div class="login-hint" id="loginHint">
+        <span>🔑</span>
+        <input id="orderPhone" placeholder="输入报名手机号查询" maxlength="11" type="tel">
+        <button onclick="loadOrders()">查询</button>
+      </div>
+      <div id="orderList"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 底部Tab -->
+<div class="tabbar">
+  <div class="tab active" id="tab-home" onclick="switchTab('home')"><span class="ico">🏠</span>课程报名</div>
+  <div class="tab" id="tab-orders" onclick="switchTab('orders')"><span class="ico">📋</span>我的订单</div>
+</div>
+
+<!-- 报名弹窗 -->
+<div class="modal-overlay" id="enrollModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle">课程报名</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= 课程数据（与超级管理员端同步） ================= */
+var STORE_KEY = 'dc_super_admin_v1';
+var ENROLL_KEY = 'dc_shared_enrollments';
+var COURSES = [];
+var currentCourse = null;
+var currentPay = 'wechat';
+var myPhone = '';
+
+function loadStore(){
+  /* 只信任管理员端完整维护的 OPC付费课程（≥10门），
+     否则使用内置16门跨境课程（避免旧/空数据覆盖演示课程） */
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw){
+      var d = JSON.parse(raw);
+      if(d && Array.isArray(d.payCourses) && d.payCourses.length >= 10) return d.payCourses;
+      if(d && Array.isArray(d.courses) && d.courses.length >= 10) return d.courses;
+    }
+  }catch(e){}
+  return null;
+}
+
+/* 默认课程（如未同步到，使用内置跨境课程演示数据） */
+var FALLBACK_COURSES = [{"id": "P001", "name": "TikTok Shop 从0到日出百单", "category": "TikTok", "mentorName": "张明远", "duration": "15课时", "price": 2980, "status": "已上架", "studentCount": 1280, "rating": 4.9, "description": "TikTok Shop 入驻、选品、短视频带货、直播、投流全流程实战，适合新手卖家。", "chapters": [{"title": "TK账号搭建与养号", "video": "tk1.mp4", "duration": "28分钟"}, {"title": "爆款选品方法论", "video": "tk2.mp4", "duration": "35分钟"}, {"title": "短视频带货实操", "video": "tk3.mp4", "duration": "40分钟"}, {"title": "直播起号与转化", "video": "tk4.mp4", "duration": "36分钟"}, {"title": "广告投放与ROI优化", "video": "tk5.mp4", "duration": "42分钟"}], "cover": "covers/P001.jpg"}, {"id": "P002", "name": "TikTok 美区小店爆单实战", "category": "TikTok", "mentorName": "张明远", "duration": "12课时", "price": 3280, "status": "已上架", "studentCount": 860, "rating": 4.8, "description": "聚焦美国市场，TK美区小店流量算法、本土化运营、达人带货全拆解。", "chapters": [{"title": "美区小店政策与入驻", "video": "tkus1.mp4", "duration": "30分钟"}, {"title": "美区流量算法解析", "video": "tkus2.mp4", "duration": "34分钟"}, {"title": "本土化内容运营", "video": "tkus3.mp4", "duration": "38分钟"}, {"title": "达人合作与BD", "video": "tkus4.mp4", "duration": "32分钟"}], "cover": "covers/P002.jpg"}, {"id": "P003", "name": "OZON 俄罗斯市场掘金课", "category": "OZON", "mentorName": "李思琪", "duration": "12课时", "price": 2680, "status": "已上架", "studentCount": 640, "rating": 4.8, "description": "OZON 平台开店、俄语市场选品、物流海外仓、跨境收款全攻略，抢占俄罗斯电商红利。", "chapters": [{"title": "OZON平台规则与入驻", "video": "oz1.mp4", "duration": "30分钟"}, {"title": "俄语市场选品逻辑", "video": "oz2.mp4", "duration": "34分钟"}, {"title": "物流与海外仓方案", "video": "oz3.mp4", "duration": "38分钟"}, {"title": "跨境收款与合规", "video": "oz4.mp4", "duration": "32分钟"}, {"title": "OZON广告投放", "video": "oz5.mp4", "duration": "35分钟"}], "cover": "covers/P003.jpg"}, {"id": "P004", "name": "OZON 高利润类目选品特训", "category": "OZON", "mentorName": "李思琪", "duration": "8课时", "price": 1980, "status": "已上架", "studentCount": 420, "rating": 4.7, "description": "俄罗斯市场高利润类目挖掘、蓝海选品、差异化打法系统特训。", "chapters": [{"title": "俄区消费趋势洞察", "video": "ozs1.mp4", "duration": "28分钟"}, {"title": "高利润类目挖掘", "video": "ozs2.mp4", "duration": "32分钟"}, {"title": "蓝海选品方法论", "video": "ozs3.mp4", "duration": "30分钟"}, {"title": "差异化打法落地", "video": "ozs4.mp4", "duration": "26分钟"}], "cover": "covers/P004.jpg"}, {"id": "P005", "name": "Shopee 虾皮全站点运营课", "category": "Shopee", "mentorName": "王建国", "duration": "16课时", "price": 2580, "status": "已上架", "studentCount": 1520, "rating": 4.7, "description": "虾皮六大站点开店、选品、定价、营销工具与本地化运营，东南亚电商首选平台。", "chapters": [{"title": "虾皮平台与站点解析", "video": "sp1.mp4", "duration": "28分钟"}, {"title": "开店与店铺装修", "video": "sp2.mp4", "duration": "32分钟"}, {"title": "东南亚选品与定价", "video": "sp3.mp4", "duration": "36分钟"}, {"title": "营销工具与活动", "video": "sp4.mp4", "duration": "30分钟"}, {"title": "物流与买家服务", "video": "sp5.mp4", "duration": "26分钟"}], "cover": "covers/P005.jpg"}, {"id": "P006", "name": "Shopee 爆款打造与流量增长", "category": "Shopee", "mentorName": "王建国", "duration": "10课时", "price": 1980, "status": "已上架", "studentCount": 890, "rating": 4.6, "description": "从0到1打造虾皮爆款，店铺流量、转化率与复购全链路提升。", "chapters": [{"title": "爆款商品策划", "video": "spb1.mp4", "duration": "30分钟"}, {"title": "流量获取矩阵", "video": "spb2.mp4", "duration": "34分钟"}, {"title": "转化率优化", "video": "spb3.mp4", "duration": "32分钟"}, {"title": "复购与粉丝运营", "video": "spb4.mp4", "duration": "28分钟"}], "cover": "covers/P006.jpg"}, {"id": "P007", "name": "亚马逊全球开店运营实战", "category": "Amazon", "mentorName": "陈雨萱", "duration": "20课时", "price": 3980, "status": "已上架", "studentCount": 2100, "rating": 4.8, "description": "亚马逊美国/欧洲/日本站点开店、FBA、Listing优化、广告、Review体系系统实战。", "chapters": [{"title": "亚马逊账号与站点", "video": "am1.mp4", "duration": "30分钟"}, {"title": "选品与市场调研", "video": "am2.mp4", "duration": "38分钟"}, {"title": "Listing优化与A+", "video": "am3.mp4", "duration": "36分钟"}, {"title": "FBA物流与库存", "video": "am4.mp4", "duration": "32分钟"}, {"title": "PPC广告投放", "video": "am5.mp4", "duration": "40分钟"}, {"title": "Review与合规", "video": "am6.mp4", "duration": "28分钟"}], "cover": "covers/P007.jpg"}, {"id": "P008", "name": "亚马逊站内PPC广告精投", "category": "Amazon", "mentorName": "陈雨萱", "duration": "10课时", "price": 2980, "status": "已上架", "studentCount": 760, "rating": 4.7, "description": "亚马逊PPC广告从搭建到优化，ACOS控制与关键词矩阵深度实战。", "chapters": [{"title": "广告结构搭建", "video": "amp1.mp4", "duration": "32分钟"}, {"title": "关键词调研矩阵", "video": "amp2.mp4", "duration": "36分钟"}, {"title": "竞价与预算策略", "video": "amp3.mp4", "duration": "30分钟"}, {"title": "ACOS优化实战", "video": "amp4.mp4", "duration": "34分钟"}], "cover": "covers/P008.jpg"}, {"id": "P009", "name": "速卖通全球开店运营课", "category": "AliExpress", "mentorName": "刘志强", "duration": "12课时", "price": 2280, "status": "已上架", "studentCount": 530, "rating": 4.6, "description": "速卖通平台规则、俄西法美站点运营、全托管半托管模式详解与实战。", "chapters": [{"title": "速卖通平台与模式", "video": "ae1.mp4", "duration": "28分钟"}, {"title": "开店与类目入驻", "video": "ae2.mp4", "duration": "30分钟"}, {"title": "选品与定价策略", "video": "ae3.mp4", "duration": "32分钟"}, {"title": "全托管半托管模式", "video": "ae4.mp4", "duration": "34分钟"}], "cover": "covers/P009.jpg"}, {"id": "P010", "name": "速卖通俄罗斯站专项运营", "category": "AliExpress", "mentorName": "刘志强", "duration": "8课时", "price": 1680, "status": "已上架", "studentCount": 310, "rating": 4.5, "description": "深耕速卖通俄罗斯大市场，本地化运营、物流时效与活动玩法专项突破。", "chapters": [{"title": "俄站市场与政策", "video": "aer1.mp4", "duration": "26分钟"}, {"title": "俄站选品特训", "video": "aer2.mp4", "duration": "30分钟"}, {"title": "俄站物流与时效", "video": "aer3.mp4", "duration": "28分钟"}], "cover": "covers/P010.jpg"}, {"id": "P011", "name": "eBay 全球跨境开店课", "category": "eBay", "mentorName": "王建国", "duration": "10课时", "price": 2180, "status": "已上架", "studentCount": 450, "rating": 4.5, "description": "eBay 美英德澳站点、拍卖与一口价、账号健康与售前售后完整体系。", "chapters": [{"title": "eBay平台与政策", "video": "eb1.mp4", "duration": "26分钟"}, {"title": "账号开设与维护", "video": "eb2.mp4", "duration": "30分钟"}, {"title": "Listing与定价", "video": "eb3.mp4", "duration": "32分钟"}, {"title": "售前售后与纠纷", "video": "eb4.mp4", "duration": "28分钟"}], "cover": "covers/P011.jpg"}, {"id": "P012", "name": "Temu 半托管模式掘金课", "category": "Temu", "mentorName": "李思琪", "duration": "8课时", "price": 1980, "status": "已上架", "studentCount": 680, "rating": 4.7, "description": "拼多多旗下 Temu 出海，全托管/半托管/本地仓模式选择与爆品打造实战。", "chapters": [{"title": "Temu模式全景", "video": "tm1.mp4", "duration": "28分钟"}, {"title": "半托管入驻与选品", "video": "tm2.mp4", "duration": "34分钟"}, {"title": "爆品打造与活动", "video": "tm3.mp4", "duration": "32分钟"}, {"title": "物流履约与售后", "video": "tm4.mp4", "duration": "26分钟"}], "cover": "covers/P012.jpg"}, {"id": "P013", "name": "独立站 + Shopify 建站运营", "category": "独立站", "mentorName": "王建国", "duration": "16课时", "price": 3280, "status": "已上架", "studentCount": 1850, "rating": 4.7, "description": "Shopify 独立站从建站到流量到转化，Facebook/Google 广告投放，打造自有品牌。", "chapters": [{"title": "Shopify建站全流程", "video": "shop1.mp4", "duration": "40分钟"}, {"title": "品牌独立站设计", "video": "shop2.mp4", "duration": "38分钟"}, {"title": "Facebook广告投放", "video": "shop3.mp4", "duration": "45分钟"}, {"title": "Google SEO引流", "video": "shop4.mp4", "duration": "40分钟"}, {"title": "独立站转化优化", "video": "shop5.mp4", "duration": "36分钟"}], "cover": "covers/P013.jpg"}, {"id": "P014", "name": "独立站从0到月销10万刀", "category": "独立站", "mentorName": "张明远", "duration": "12课时", "price": 3680, "status": "已上架", "studentCount": 520, "rating": 4.6, "description": "独立站选品、广告投放、邮件营销、社媒红人，手把手带你跑通月销10万刀模型。", "chapters": [{"title": "独立站选品定位", "video": "dz1.mp4", "duration": "32分钟"}, {"title": "广告投放模型", "video": "dz2.mp4", "duration": "38分钟"}, {"title": "邮件营销体系", "video": "dz3.mp4", "duration": "34分钟"}, {"title": "红人营销打法", "video": "dz4.mp4", "duration": "30分钟"}], "cover": "covers/P014.jpg"}, {"id": "P015", "name": "AI 获客与内容营销实战", "category": "AI获客", "mentorName": "李思琪", "duration": "10课时", "price": 1980, "status": "已上架", "studentCount": 980, "rating": 4.8, "description": "用 AI 工具做跨境获客、内容创作、社媒运营，一人顶一个团队。", "chapters": [{"title": "AI工具全景", "video": "ai5.mp4", "duration": "25分钟"}, {"title": "AI内容创作", "video": "ai6.mp4", "duration": "30分钟"}, {"title": "海外社媒获客", "video": "ai7.mp4", "duration": "33分钟"}, {"title": "AI客户跟进", "video": "ai8.mp4", "duration": "28分钟"}, {"title": "AI数据选品", "video": "ai9.mp4", "duration": "32分钟"}], "cover": "covers/P015.jpg"}, {"id": "P016", "name": "跨境电商全链路实战营", "category": "跨境电商", "mentorName": "陈雨萱", "duration": "20课时", "price": 3980, "status": "已上架", "studentCount": 1560, "rating": 4.7, "description": "从选品、供应链、平台运营到物流履约的跨境电商完整链路，适合团队系统学习。", "chapters": [{"title": "跨境电商行业全景", "video": "cc1.mp4", "duration": "30分钟"}, {"title": "全球市场选品", "video": "cc2.mp4", "duration": "36分钟"}, {"title": "供应链与成本控制", "video": "cc3.mp4", "duration": "34分钟"}, {"title": "多平台运营矩阵", "video": "cc4.mp4", "duration": "38分钟"}, {"title": "物流与海外仓", "video": "cc5.mp4", "duration": "30分钟"}], "cover": "covers/P016.jpg"}];
+
+/* 封面路径：兼容 file:// 直接打开 与 http 服务器访问 */
+function coverUrl(id){
+  try{
+    if(id.indexOf('/')>=0 || id.indexOf('http')===0) return id;
+    if(location.protocol === 'file:') return 'covers/' + id + '.jpg';
+    return 'covers/' + id + '.jpg';
+  }catch(e){ return 'covers/' + id + '.jpg'; }
+}
+function coverImg(id, style){
+  return '<img src="'+coverUrl(id)+'" onerror="this.style.display=\'none\';" style="'+(style||'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;')+'">';
+}
+
+function esc(s){
+  var d=document.createElement('div');
+  d.textContent = (s==null?'':String(s));
+  return d.innerHTML;
+}
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show';
+  clearTimeout(t._t);
+  t._t=setTimeout(function(){t.className='toast';},2600);
+}
+function grads(i){
+  var g=['linear-gradient(135deg,#C41E3A,#E85A70)','linear-gradient(135deg,#7B61D1,#A78BFA)','linear-gradient(135deg,#0EA5E9,#38BDF8)','linear-gradient(135deg,#10B981,#34D399)','linear-gradient(135deg,#F59E0B,#FBBF24)'];
+  return g[i%g.length];
+}
+function chapterText(ch, i){
+  return (typeof ch === 'string') ? ch : (ch && (ch.title||ch.name)) ? (ch.title||ch.name) : ('第'+(i+1)+'课');
+}
+function chapterDur(ch){
+  return (typeof ch === 'object' && ch && ch.duration) ? ch.duration : '';
+}
+
+/* ================= 首页渲染 ================= */
+function renderCourses(){
+  var list = document.getElementById('courseList');
+  var html = '';
+  COURSES.forEach(function(c, i){
+    var priceHtml = (c.price && c.price>0)
+      ? '<div class="course-price">¥'+c.price.toLocaleString()+'</div>'
+      : '<div class="course-price free">免费</div>';
+    var chapters = (c.chapters && c.chapters.length) || 0;
+    var isHot = (c.studentCount || 0) >= 1000;
+    var priceOverlay = (c.price && c.price>0) ? '¥'+c.price.toLocaleString() : '免费';
+    html += '<div class="course-card" onclick="openDetail('+i+')">'+
+      '<div class="course-cover" style="background:'+grads(i)+'">'+
+        (c.cover ? coverImg(c.cover) : '📘')+
+        '<span class="course-cat">'+esc(c.category)+'</span>'+
+        (isHot ? '<span class="course-hot">🔥 热卖</span>' : '')+
+        '<span class="course-rating-pill">⭐ '+(c.rating||'5.0')+' · '+(c.studentCount||0).toLocaleString()+'人</span>'+
+        '<span class="course-price-pill" style="'+(c.price>0?'':'color:#22C555;')+'">'+priceOverlay+'</span>'+
+      '</div>'+
+      '<div class="course-body">'+
+        '<div class="course-name">'+esc(c.name)+'</div>'+
+        '<div class="course-desc">'+esc(c.description||'')+'</div>'+
+        '<div class="course-meta">'+
+          '<span>👨‍🏫 '+esc(c.mentorName||'平台导师')+'</span>'+
+          '<span>⏱ '+esc(c.duration||'-')+'</span>'+
+          '<span>📖 '+chapters+'章</span>'+
+        '</div>'+
+        '<button class="enroll-btn" onclick="event.stopPropagation();quickEnroll('+i+')">立即报名</button>'+
+      '</div>'+
+    '</div>';
+  });
+  list.innerHTML = html || '<div style="text-align:center;padding:40px;color:#999;">暂无在招课程，请联系平台</div>';
+}
+
+/* ================= 顶部轮播图 ================= */
+var curSlide = 0;
+var slideTimer = null;
+var SWIPER_SLIDES = [
+  {
+    tag: '数字中国AI · OPC商学院',
+    title: '一站式跨境选课报名缴费平台',
+    sub: 'TK · OZON · 虾皮 · 亚马逊 · 速卖通 · eBay · Temu · 独立站 | 选课 → 报名 → 缴费 → 开课，全程在线搞定',
+    cover: 'P001'
+  },
+  { tag: '🔥 热门课程', title: 'TikTok Shop 从0到日出百单', sub: '短视频带货 · 直播 · 投流全流程实战，适合新手卖家', pid: 'P001' },
+  { tag: '🔥 热门课程', title: 'Shopee 虾皮全站点运营课', sub: '东南亚六大站点开店、选品、定价与本地化运营', pid: 'P005' },
+  { tag: '🔥 热门课程', title: '亚马逊全球开店运营实战', sub: 'FBA · Listing · PPC广告体系系统实战', pid: 'P007' },
+  { tag: '🔥 热门课程', title: 'AI 获客与内容营销实战', sub: '用 AI 工具做跨境获客，一人顶一个团队', pid: 'P015' }
+];
+
+function buildSwiper(){
+  var track = document.getElementById('swiperTrack');
+  var dots = document.getElementById('swiperDots');
+  if(!track) return;
+  var html = ''; var dotsHtml = '';
+  SWIPER_SLIDES.forEach(function(s, i){
+    var cv = s.cover || (s.pid || 'P001');
+    var img = coverUrl(cv);
+    html += '<div class="swiper-slide" onclick="'+(s.pid?'openCourseById(\''+s.pid+'\')':'')+'">'+
+      '<img class="slide-bg" src="'+img+'" alt="">'+
+      '<div class="slide-veil"></div>'+
+      '<div class="slide-content">'+
+        '<div class="slide-tag">'+esc(s.tag)+'</div>'+
+        '<div class="slide-title">'+esc(s.title)+'</div>'+
+        '<div class="slide-sub">'+esc(s.sub).replace(/\n/g,'<br>')+'</div>'+
+        (s.pid ? '<div class="slide-price">点击查看课程详情 ›</div>' : '')+
+      '</div>'+
+    '</div>';
+    dotsHtml += '<i class="'+(i===0?'on':'')+'" onclick="swipeTo('+i+')"></i>';
+  });
+  track.innerHTML = html;
+  dots.innerHTML = dotsHtml;
+}
+function swipeTo(n){
+  var track = document.getElementById('swiperTrack');
+  if(!track) return;
+  var total = SWIPER_SLIDES.length;
+  if(n >= total) n = 0;
+  if(n < 0) n = total - 1;
+  curSlide = n;
+  track.style.transform = 'translateX(-' + (n*100) + '%)';
+  var dots = document.getElementById('swiperDots').children;
+  for(var i=0;i<dots.length;i++){ dots[i].className = (i===n?'on':''); }
+  restartSlideTimer();
+}
+function restartSlideTimer(){
+  if(slideTimer) clearInterval(slideTimer);
+  slideTimer = setInterval(function(){ swipeTo(curSlide+1); }, 4200);
+}
+function openCourseById(pid){
+  for(var i=0;i<COURSES.length;i++){
+    if(COURSES[i].id === pid){ openDetail(i); return; }
+  }
+  // 兜底：用轮播内置数据打开
+  var s = SWIPER_SLIDES.filter(function(x){ return x.pid===pid; })[0];
+  if(s){
+    var c = { id: pid, name: s.title, category: '热门课程', mentorName: '平台导师', duration: '待定', price: 0, status: '已上架', description: s.sub, cover: 'covers/'+pid+'.jpg', chapters: [] };
+    COURSES.push(c);
+    openDetail(COURSES.length-1);
+  }
+}
+
+/* ================= 课程详情 ================= */
+function openDetail(i){
+  var c = COURSES[i];
+  if(!c) return;
+  currentCourse = c;
+  var price = (c.price && c.price>0) ? c.price : 0;
+  var chaptersHtml = '';
+  if(c.chapters && c.chapters.length){
+    c.chapters.forEach(function(ch, i){
+      var dur = chapterDur(ch);
+      chaptersHtml += '<div class="chapter"><div class="ch-num">'+(i+1)+'</div><div class="ch-txt">'+esc(chapterText(ch,i))+'</div>'+(dur?'<div class="ch-dur">'+esc(dur)+'</div>':'')+'</div>';
+    });
+  } else {
+    chaptersHtml = '<p style="color:#aaa;font-size:13px;">课程大纲整理中，报名后即可获取完整内容</p>';
+  }
+  var tags = [];
+  if(c.category) tags.push(c.category);
+  if(c.mentorName) tags.push('导师 '+c.mentorName);
+  if(c.duration) tags.push(c.duration);
+  tags.push((c.chapters?c.chapters.length:0)+'章');
+
+  document.getElementById('detailBody').innerHTML =
+    '<div class="detail-hero">'+
+      '<div class="detail-cover" style="background:'+grads(i)+'">'+
+        (c.cover ? coverImg(c.cover) : '📚')+
+        '<span class="course-cat" style="position:absolute;top:12px;left:14px;">'+esc(c.category||'')+'</span>'+
+      '</div>'+
+      '<div class="detail-info">'+
+        '<div class="detail-name">'+esc(c.name)+'</div>'+
+        '<div class="detail-tags">'+tags.map(function(t){return '<span class="detail-tag">'+esc(t)+'</span>';}).join('')+'</div>'+
+        '<div class="detail-price-row">'+
+          (price>0?'<div class="detail-price">¥'+price.toLocaleString()+'</div>':'<div class="detail-price free">免费</div>')+
+          '<div class="detail-extra">⭐ '+(c.rating||'5.0')+' · 👥 '+((c.studentCount||0)).toLocaleString()+'人已学</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="section"><h3>课程介绍</h3><p class="desc">'+esc(c.description||'暂无介绍')+'</p></div>'+
+    '<div class="section"><h3>课程大纲</h3>'+chaptersHtml+'</div>';
+  document.getElementById('detailBar').innerHTML =
+    '<div class="bp-price"><div class="p1'+(price>0?'':' free')+'">'+(price>0?'¥'+price.toLocaleString():'免费')+'</div><div class="p2">'+esc(c.mentorName||'平台导师')+' · '+esc(c.duration||'')+'</div></div>'+
+    '<button class="bp-btn" onclick="openEnroll()">立即报名</button>';
+  switchTab('detail');
+}
+
+/* ================= Tab切换 ================= */
+function switchTab(tab){
+  var pages = ['home','detail','orders'];
+  pages.forEach(function(p){
+    var el = document.getElementById('page-'+p);
+    if(el) el.classList.remove('active');
+    var tb = document.getElementById('tab-'+p);
+    if(tb) tb.classList.remove('active');
+  });
+  var el = document.getElementById('page-'+tab);
+  if(el) el.classList.add('active');
+  var tb = document.getElementById('tab-'+tab);
+  if(tb) tb.classList.add('active');
+  if(tab==='orders') loadOrders();
+}
+function goHome(){ switchTab('home'); }
+
+/* ================= 立即报名（卡片按钮直接弹报名表单） ================= */
+function quickEnroll(i){
+  var c = COURSES[i];
+  if(!c) return;
+  currentCourse = c;
+  openEnroll();
+}
+
+/* ================= 报名弹窗 ================= */
+function openEnroll(){
+  var c = currentCourse;
+  if(!c) return;
+  var price = (c.price && c.price>0) ? c.price : 0;
+  document.getElementById('modalTitle').textContent = '报名';
+  document.getElementById('modalBody').innerHTML =
+    '<div class="order-summary">'+
+      '<div class="os-title">📚 '+esc(c.name)+'</div>'+
+      '<div class="os-row">'+
+        '<b>分类：</b>'+esc(c.category||'-')+'　<b>导师：</b>'+esc(c.mentorName||'-')+'<br>'+
+        '<b>课时：</b>'+esc(c.duration||'-')+'　<b>章节：</b>'+(c.chapters?c.chapters.length:0)+'章'+
+      '</div>'+
+      '<div style="margin-top:8px;font-size:14px;color:#C41E3A;font-weight:700;">课程费用：'+(price>0?'¥'+price.toLocaleString():'免费')+'</div>'+
+    '</div>'+
+    '<div style="font-size:13px;font-weight:700;color:#222;margin-bottom:12px;">① 填写报名信息</div>'+
+    '<div class="form-group"><label>学员姓名 *</label><input class="form-input" id="fName" placeholder="请输入真实姓名"></div>'+
+    '<div class="form-group"><label>手机号码 *</label><input class="form-input" id="fPhone" maxlength="11" type="tel" placeholder="用于接收开课通知与缴费凭证"></div>'+
+    '<div class="form-group"><label>微信号（选填）</label><input class="form-input" id="fWechat" placeholder="方便导师联系你"></div>'+
+    '<div class="form-group"><label>备注（选填）</label><input class="form-input" id="fNote" placeholder="想咨询的问题或学习目标"></div>'+
+    '<div style="font-size:13px;font-weight:700;color:#222;margin-bottom:12px;">② 选择支付方式</div>'+
+    '<div class="pay-options">'+
+      '<div class="pay-option active" id="payWechat" onclick="selPay(this,\'wechat\')"><div class="pay-ico">💚</div><div class="pay-name">微信支付</div></div>'+
+      '<div class="pay-option" id="payAlipay" onclick="selPay(this,\'alipay\')"><div class="pay-ico">💙</div><div class="pay-name">支付宝</div></div>'+
+    '</div>'+
+    '<div style="font-size:11px;color:#aaa;margin-top:10px;">* 当前为演示支付，提交后自动生成报名订单，后台可实时查看。</div>';
+  document.getElementById('modalActions').innerHTML =
+    '<button class="btn btn-cancel" onclick="closeModal()">取消</button>'+
+    '<button class="btn btn-confirm" onclick="confirmEnroll()">'+(price>0?'确认缴费 ¥'+price.toLocaleString():'确认报名（免费）')+'</button>';
+  document.getElementById('enrollModal').classList.add('show');
+  currentPay = 'wechat';
+}
+function selPay(el, type){
+  currentPay = type;
+  document.querySelectorAll('.pay-option').forEach(function(x){x.classList.remove('active');});
+  el.classList.add('active');
+}
+function closeModal(){
+  document.getElementById('enrollModal').classList.remove('show');
+  currentCourse = null;
+}
+
+/* ================= 确认报名缴费 ================= */
+function confirmEnroll(){
+  if(!currentCourse) return;
+  var name = document.getElementById('fName').value.trim();
+  var phone = document.getElementById('fPhone').value.trim();
+  if(!name){ toast('请填写学员姓名'); return; }
+  if(!/^1\d{10}$/.test(phone)){ toast('请填写正确的11位手机号'); return; }
+  var wechat = document.getElementById('fWechat').value.trim();
+  var note = document.getElementById('fNote').value.trim();
+  var price = (currentCourse.price && currentCourse.price>0) ? currentCourse.price : 0;
+  var now = new Date();
+  var timeStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  var order = {
+    id: 'E'+Date.now(),
+    courseId: currentCourse.id,
+    courseName: currentCourse.name,
+    category: currentCourse.category||'',
+    mentor: currentCourse.mentorName||'平台导师',
+    price: price,
+    studentName: name,
+    phone: phone,
+    wechat: wechat,
+    note: note,
+    payMethod: currentPay,
+    status: price>0 ? '已缴费' : '已报名',
+    time: timeStr,
+    chapters: (currentCourse.chapters&&currentCourse.chapters.length)||0
+  };
+  /* 本地持久化 */
+  var list = [];
+  try{ list = JSON.parse(localStorage.getItem(ENROLL_KEY))||[]; }catch(e){}
+  list.unshift(order);
+  try{ localStorage.setItem(ENROLL_KEY, JSON.stringify(list)); }catch(e){}
+  /* 直接写入超级管理员端 store（同浏览器内 admin 可见） */
+  try{
+    var adminRaw = localStorage.getItem(STORE_KEY);
+    var adminData = adminRaw ? JSON.parse(adminRaw) : {};
+    if(!adminData.enrollments || !Array.isArray(adminData.enrollments)) adminData.enrollments = [];
+    var ex = adminData.enrollments.some(function(x){return x.id===order.id;});
+    if(!ex){ adminData.enrollments.unshift(order); localStorage.setItem(STORE_KEY, JSON.stringify(adminData)); }
+  }catch(e){}
+  /* 同步到父窗口共享总线（iframe 嵌入时实时通知） */
+  try{
+    if(window.parent && window.parent !== window){
+      window.parent.postMessage({type:'dcSet', key:'enrollments', data:list}, '*');
+    }
+  }catch(e){}
+  /* 成功页 */
+  document.getElementById('modalTitle').textContent = '报名成功';
+  document.getElementById('modalBody').innerHTML =
+    '<div class="success-wrap">'+
+      '<div class="success-ico">🎉</div>'+
+      '<div class="success-title">'+(price>0?'缴费成功！':'报名成功！')+'</div>'+
+      '<div class="success-sub">订单号 '+order.id+'</div>'+
+      '<div class="success-card">'+
+        '📚 课程：<b>'+esc(order.courseName)+'</b><br>'+
+        '👤 学员：<b>'+esc(order.studentName)+'</b>（'+esc(order.phone)+'）<br>'+
+        '💰 费用：<b style="color:#C41E3A">'+(price>0?'¥'+price.toLocaleString():'免费')+'</b> · '+(currentPay==='wechat'?'微信支付':'支付宝')+'<br>'+
+        '🕐 报名时间：'+esc(order.time)+'<br>'+
+        '📖 课程内容：'+esc(order.category)+' · '+(order.chapters)+'章 · 👨‍🏫 '+esc(order.mentor)+'<br>'+
+        '✅ 状态：<span style="color:#22C555;font-weight:700">'+order.status+'</span>'+
+      '</div>'+
+      '<button class="success-done" onclick="closeModal()">完成</button>'+
+    '</div>';
+  document.getElementById('modalActions').innerHTML = '';
+  myPhone = phone;
+  toast(price>0?'缴费成功，报名已提交！':'报名成功！');
+}
+
+/* ================= 我的订单 ================= */
+function getMyOrders(){
+  var list = [];
+  try{ list = JSON.parse(localStorage.getItem(ENROLL_KEY))||[]; }catch(e){}
+  return list;
+}
+function loadOrders(){
+  var phone = document.getElementById('orderPhone') ? document.getElementById('orderPhone').value.trim() : myPhone;
+  if(phone) myPhone = phone;
+  var all = getMyOrders();
+  var mine = myPhone ? all.filter(function(o){ return o.phone === myPhone; }) : all;
+  var listEl = document.getElementById('orderList');
+  if(mine.length === 0){
+    listEl.innerHTML = '<div class="empty"><div class="e-ico">📋</div><p>'+(myPhone?'该手机号暂无报名记录，快去选课吧':'输入报名手机号查询你的课程')+'</p></div>';
+    return;
+  }
+  var html = '';
+  mine.forEach(function(o){
+    html += '<div class="order-card">'+
+      '<div class="order-head"><div class="order-course">📚 '+esc(o.courseName)+'</div><div class="order-status '+(o.status==='已缴费'?'status-paid':'status-booked')+'">'+esc(o.status)+'</div></div>'+
+      '<div class="order-info">'+
+        '👤 学员：<b>'+esc(o.studentName)+'</b>（'+esc(o.phone)+'）<br>'+
+        '💳 费用：<span class="order-amount">'+(o.price>0?'¥'+o.price.toLocaleString():'免费')+'</span> · '+(o.payMethod==='wechat'?'微信支付':'支付宝')+'<br>'+
+        '🕐 报名时间：'+esc(o.time)+'<br>'+
+        '🏷 订单号：'+esc(o.id)+'<br>'+
+        '📖 课程内容：'+esc(o.category)+' · '+(o.chapters||0)+'章 · 👨‍🏫 '+esc(o.mentor)+
+      '</div>'+
+    '</div>';
+  });
+  listEl.innerHTML = html;
+}
+
+/* ================= 初始化 ================= */
+(function init(){
+  var synced = loadStore();
+  COURSES = synced ? synced.filter(function(c){return c.status==='已上架' || !c.status;}) : FALLBACK_COURSES;
+  /* 优先从后端拉取 OPC付费课程（含封面图），成功后覆盖本地数据 */
+  try{
+    fetch('/api/get/paycourses').then(function(r){ return r.json(); }).then(function(res){
+      var list = (res && Array.isArray(res.data)) ? res.data : [];
+      if(list.length){
+        COURSES = list.filter(function(c){return c.status==='已上架' || !c.status;});
+        renderCourses();
+      }
+    }).catch(function(){});
+  }catch(e){}
+  /* 监听主页面共享总线（courses 通道兜底） */
+  window.addEventListener('message', function(e){
+    var d = e.data;
+    if(!d) return;
+    if(d.type==='dcData' && (d.key==='courses'||d.key==='payCourses') && Array.isArray(d.data)){
+      var arr = d.data.filter(function(c){return c.status==='已上架' || !c.status;});
+      if(arr.length){ COURSES = arr; renderCourses(); }
+    }
+  });
+  try{ window.parent.postMessage({type:'dcGet', key:'payCourses'}, '*'); }catch(e){}
+  try{ window.parent.postMessage({type:'dcGet', key:'courses'}, '*'); }catch(e){}
+  renderCourses();
+  buildSwiper();
+  restartSlideTimer();
+  /* 记住上次查询手机号 */
+  try{ myPhone = localStorage.getItem('dc_enroll_myphone')||''; }catch(e){}
+  if(myPhone){
+    var hint = document.getElementById('loginHint');
+    if(hint) hint.style.display = 'none';
+    loadOrders();
+  }
+})();
+</script>
+</body>
+</html>

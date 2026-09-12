@@ -1,0 +1,2584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字中国合作伙伴</title>
+<style>
+:root{
+  --red:#C41E3A;
+  --red-dark:#A51931;
+  --red-light:#FBEDF0;
+  --red-lighter:#FDF5F6;
+  --sidebar:#B22233;
+  --sidebar-hover:#C43745;
+  --sidebar-active:#D43F4D;
+  --card:#FFFFFF;
+  --text-main:#1A1A1A;
+  --text-sub:#555555;
+  --text-mute:#8A8A8A;
+  --border:#EDE6E7;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.16);
+  --radius:12px;
+  --green:#16A34A;
+  --orange:#EA8C1E;
+  --blue:#2563EB;
+  --purple:#7C3AED;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  color:var(--text-main);
+  background:var(--red-lighter);
+  font-size:14px;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;font-size:14px;}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--text-main);}
+
+/* ===== 布局 ===== */
+.app{display:flex;min-height:100vh;}
+
+/* ===== 侧边栏 ===== */
+.sidebar{
+  width:232px;background:var(--sidebar);color:#FFFFFF;
+  display:flex;flex-direction:column;flex-shrink:0;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+}
+.sidebar::-webkit-scrollbar{width:4px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.35);border-radius:2px;}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.18);
+  background:#C00000;
+}
+.logo-mark{
+  width:36px;height:36px;border-radius:9px;flex-shrink:0;
+  background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  color:#FFD6D6;font-weight:700;font-size:16px;
+}
+.logo-text{line-height:1.2;}
+.logo-text .t1{font-size:15px;font-weight:600;color:#FFD6D6;letter-spacing:.5px;}
+.logo-text .t2{font-size:11px;color:#FFD6D6;margin-top:2px;letter-spacing:.5px;}
+.nav{padding:10px 0;flex:1;}
+.nav-group{padding:6px 18px 4px;font-size:11px;color:#FFD6D6;letter-spacing:1px;}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 16px;margin:2px 10px;border-radius:8px;
+  color:#FFFFFF;font-size:13.5px;transition:all .15s;
+  position:relative;text-align:left;width:calc(100% - 20px);
+}
+.nav-item:hover{background:var(--sidebar-hover);color:#fff;}
+.nav-item.active{background:var(--sidebar-active);color:#FFFFFF;}
+.nav-item .ic{width:18px;height:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.nav-item .badge{
+  margin-left:auto;background:#FFFFFF;color:#B22233;font-size:10px;
+  padding:1px 6px;border-radius:8px;font-weight:600;
+}
+.sidebar-foot{
+  padding:14px 18px;border-top:1px solid rgba(255,255,255,.18);
+  font-size:11px;color:#FFD6D6;line-height:1.6;
+}
+.sidebar-logout{
+  display:flex;align-items:center;gap:8px;
+  margin:10px 18px 0;padding:9px 12px;border-radius:8px;
+  background:rgba(255,255,255,.12);color:#FFD6D6;font-size:13px;
+  transition:all .15s;text-align:left;width:calc(100% - 36px);
+}
+.sidebar-logout:hover{background:rgba(255,255,255,.22);color:#FFFFFF;}
+
+/* ===== 主区 ===== */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{
+  height:60px;background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:16px;padding:0 24px;
+  position:sticky;top:0;z-index:50;
+}
+.breadcrumb{font-size:15px;font-weight:600;color:var(--text-main);}
+.breadcrumb .sub{font-size:12px;color:var(--text-mute);font-weight:400;margin-left:8px;}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
+.search-box{
+  display:flex;align-items:center;gap:8px;background:#F5F5F5;
+  border:1px solid transparent;border-radius:8px;padding:7px 12px;width:260px;
+  transition:all .15s;
+}
+.search-box:focus-within{border-color:var(--red);background:#fff;}
+.search-box input{border:none;outline:none;background:transparent;width:100%;font-size:13px;}
+.icon-btn{
+  width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:#555;transition:all .15s;position:relative;
+}
+.icon-btn:hover{background:#F5F5F5;}
+.icon-btn .dot{position:absolute;top:8px;right:8px;width:7px;height:7px;background:var(--red);border-radius:50%;}
+.avatar{
+  width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#E23D56);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px;
+}
+.avatar-name{font-size:13px;font-weight:500;color:var(--text-main);}
+.avatar-role{font-size:11px;color:var(--text-mute);}
+
+.content{padding:24px;flex:1;}
+
+/* ===== 页面切换 ===== */
+.page{display:none;animation:fadeIn .25s;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ===== 页面标题 ===== */
+.page-head{display:flex;align-items:flex-end;gap:12px;margin-bottom:20px;}
+.page-head h1{font-size:22px;font-weight:700;color:var(--text-main);}
+.page-head .desc{font-size:13px;color:var(--text-sub);margin-top:4px;}
+.page-head .actions{margin-left:auto;display:flex;gap:10px;}
+
+/* ===== 按钮 ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:8px;font-weight:500;
+  transition:all .15s;border:1px solid transparent;font-size:13.5px;
+}
+.btn-primary{background:var(--red);color:#fff;}
+.btn-primary:hover{background:var(--red-dark);}
+.btn-outline{background:#fff;color:var(--red);border-color:var(--red);}
+.btn-outline:hover{background:var(--red-light);}
+.btn-ghost{background:#fff;color:var(--text-sub);border-color:var(--border);}
+.btn-ghost:hover{border-color:#d5cfd0;color:var(--text-main);}
+.btn-sm{padding:5px 10px;font-size:12.5px;border-radius:6px;}
+.btn-link{color:var(--red);font-size:12.5px;padding:2px 6px;}
+.btn-link:hover{text-decoration:underline;}
+.btn-danger{background:#FEF2F2;color:#DC2626;border:1px solid #FECACA;}
+.btn-danger:hover{background:#FEE2E2;}
+
+/* ===== 卡片 ===== */
+.card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);border:1px solid var(--border);
+}
+.card-pad{padding:20px;}
+.card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:16px 20px;border-bottom:1px solid var(--border);
+}
+.card-head h3{font-size:15px;font-weight:600;color:var(--text-main);}
+.card-head .more{margin-left:auto;color:var(--text-sub);font-size:12.5px;}
+.card-head .more:hover{color:var(--red);}
+
+/* ===== 统计卡片 ===== */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;}
+.stat-card{
+  background:var(--card);border-radius:var(--radius);padding:20px;
+  box-shadow:var(--shadow);border:1px solid var(--border);
+  position:relative;overflow:hidden;transition:transform .15s;
+}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-card .label{font-size:13px;color:var(--text-sub);display:flex;align-items:center;gap:6px;}
+.stat-card .value{font-size:28px;font-weight:700;color:var(--text-main);margin:8px 0 4px;}
+.stat-card .trend{font-size:12px;color:var(--text-mute);}
+.stat-card .trend.up{color:var(--green);}
+.stat-card .icon{
+  position:absolute;right:16px;top:18px;width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.icon-red{background:var(--red-light);color:var(--red);}
+.icon-blue{background:#EFF6FF;color:var(--blue);}
+.icon-green{background:#F0FDF4;color:var(--green);}
+.icon-orange{background:#FFF7ED;color:var(--orange);}
+.icon-purple{background:#F5F3FF;color:var(--purple);}
+
+/* ===== 双栏布局 ===== */
+.grid-2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+
+/* ===== 表格 ===== */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead th{
+  text-align:left;padding:12px 16px;background:#FAFAFA;color:var(--text-sub);
+  font-weight:600;font-size:12.5px;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+tbody td{padding:13px 16px;border-bottom:1px solid #F5F0F1;color:var(--text-main);}
+tbody tr:hover{background:#FDF7F8;}
+tbody tr:last-child td{border-bottom:none;}
+.tb-actions{display:flex;gap:4px;}
+
+/* ===== 标签 ===== */
+.tag{
+  display:inline-flex;align-items:center;gap:4px;padding:3px 10px;
+  border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap;
+}
+.tag-red{background:var(--red-light);color:var(--red);}
+.tag-green{background:#F0FDF4;color:var(--green);}
+.tag-orange{background:#FFF7ED;color:var(--orange);}
+.tag-blue{background:#EFF6FF;color:var(--blue);}
+.tag-gray{background:#F5F5F5;color:var(--text-sub);}
+.tag-purple{background:#F5F3FF;color:var(--purple);}
+
+/* ===== 待办列表 ===== */
+.todo-list{list-style:none;}
+.todo-item{
+  display:flex;align-items:center;gap:12px;padding:13px 20px;
+  border-bottom:1px solid #F5F0F1;transition:background .15s;
+}
+.todo-item:last-child{border-bottom:none;}
+.todo-item:hover{background:#FDF7F8;}
+.todo-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-red{background:var(--red);}
+.dot-orange{background:var(--orange);}
+.dot-blue{background:var(--blue);}
+.todo-info{flex:1;min-width:0;}
+.todo-info .tt{font-size:13.5px;color:var(--text-main);font-weight:500;}
+.todo-info .ts{font-size:12px;color:var(--text-mute);margin-top:2px;}
+.todo-time{font-size:12px;color:var(--text-mute);white-space:nowrap;}
+
+/* ===== AI 推荐 ===== */
+.rec-item{
+  display:flex;gap:14px;padding:14px 20px;border-bottom:1px solid #F5F0F1;
+  align-items:flex-start;
+}
+.rec-item:last-child{border-bottom:none;}
+.rec-score{
+  width:44px;height:44px;border-radius:10px;flex-shrink:0;
+  background:var(--red-light);color:var(--red);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;
+}
+.rec-info{flex:1;}
+.rec-info .rt{font-size:13.5px;font-weight:500;color:var(--text-main);}
+.rec-info .rd{font-size:12px;color:var(--text-sub);margin-top:3px;line-height:1.5;}
+.rec-info .rr{font-size:11.5px;color:var(--text-mute);margin-top:4px;}
+
+/* ===== 快捷入口 ===== */
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.quick-btn{
+  display:flex;align-items:center;gap:12px;padding:16px;border-radius:10px;
+  border:1px solid var(--border);background:#fff;transition:all .15s;text-align:left;
+}
+.quick-btn:hover{border-color:var(--red);box-shadow:var(--shadow);}
+.quick-btn .qi{
+  width:38px;height:38px;border-radius:9px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.quick-btn .qt{font-size:13.5px;font-weight:600;color:var(--text-main);}
+.quick-btn .qd{font-size:12px;color:var(--text-mute);margin-top:2px;}
+
+/* ===== AI 助手面板 ===== */
+.ai-panel{
+  background:linear-gradient(135deg,#1E293B,#3A1C24);
+  border-radius:var(--radius);padding:22px;color:#fff;position:relative;overflow:hidden;
+}
+.ai-panel::after{
+  content:'';position:absolute;right:-40px;top:-40px;width:160px;height:160px;
+  background:rgba(196,30,58,.35);border-radius:50%;filter:blur(20px);
+}
+.ai-panel h3{font-size:16px;font-weight:600;margin-bottom:6px;position:relative;z-index:1;}
+.ai-panel p{font-size:12.5px;color:#B7C1D1;line-height:1.6;position:relative;z-index:1;}
+.ai-input{
+  display:flex;gap:10px;margin-top:16px;position:relative;z-index:1;
+}
+.ai-input input{
+  flex:1;padding:11px 14px;border-radius:8px;border:none;outline:none;
+  font-size:13px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.15);
+}
+.ai-input input::placeholder{color:#8A97A8;}
+.ai-suggest{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;position:relative;z-index:1;}
+.ai-chip{
+  padding:6px 12px;border-radius:16px;font-size:12px;background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.15);color:#E5E7EB;cursor:pointer;transition:all .15s;
+}
+.ai-chip:hover{background:var(--red);border-color:var(--red);color:#fff;}
+
+/* ===== 空状态 ===== */
+.empty{padding:50px 20px;text-align:center;color:var(--text-mute);}
+.empty .ei{font-size:40px;margin-bottom:12px;}
+.empty .et{font-size:14px;font-weight:500;color:var(--text-sub);}
+.empty .ed{font-size:12.5px;margin-top:4px;}
+
+/* ===== 模态框 ===== */
+.modal-mask{
+  position:fixed;inset:0;background:rgba(15,23,42,.5);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:24px;
+  backdrop-filter:blur(2px);
+}
+.modal-mask.open{display:flex;animation:fadeIn .2s;}
+.modal{
+  background:#fff;border-radius:14px;width:100%;max-width:560px;
+  box-shadow:var(--shadow-lg);max-height:90vh;display:flex;flex-direction:column;
+  animation:popIn .2s;
+}
+.modal.wide{max-width:760px;}
+@keyframes popIn{from{opacity:0;transform:scale(.96) translateY(10px);}to{opacity:1;transform:none;}}
+.modal-head{
+  display:flex;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border);
+}
+.modal-head h3{font-size:16px;font-weight:600;color:var(--text-main);}
+.modal-close{
+  margin-left:auto;width:30px;height:30px;border-radius:7px;color:var(--text-mute);
+  display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .15s;
+}
+.modal-close:hover{background:#F5F5F5;color:var(--text-main);}
+.modal-body{padding:20px 22px;overflow-y:auto;}
+.modal-foot{
+  padding:14px 22px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid .full{grid-column:1 / -1;}
+.form-item label{
+  display:block;font-size:12.5px;color:var(--text-sub);font-weight:500;margin-bottom:6px;
+}
+.form-item label .req{color:var(--red);margin-left:2px;}
+.form-item input,.form-item select,.form-item textarea{
+  width:100%;padding:9px 12px;border-radius:8px;border:1px solid #DED5D6;
+  outline:none;transition:all .15s;background:#fff;
+}
+.form-item input:focus,.form-item select:focus,.form-item textarea:focus{
+  border-color:var(--red);box-shadow:0 0 0 3px rgba(196,30,58,.08);
+}
+.form-item textarea{resize:vertical;min-height:70px;}
+
+/* ===== Toast ===== */
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px;}
+.toast{
+  background:#fff;border-radius:10px;padding:13px 18px;box-shadow:var(--shadow-lg);
+  display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--text-main);
+  border-left:3px solid var(--green);animation:slideIn .25s;
+}
+.toast.error{border-left-color:#DC2626;}
+.toast .t-ic{font-size:16px;}
+@keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:none;}}
+
+/* ===== 响应式 ===== */
+@media(max-width:1100px){
+  .stat-grid{grid-template-columns:repeat(2,1fr);}
+  .grid-2,.grid-3{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .sidebar{width:64px;}
+  .logo-text,.nav-item span,.nav-group,.sidebar-foot{display:none;}
+  .sidebar-logout{justify-content:center;margin:8px 10px 0;padding:10px 0;width:44px;}
+  .sidebar-logout .lg-txt{display:none;}
+  .nav-item{justify-content:center;padding:12px;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- 侧边栏 -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">数</div>
+      <div class="logo-text">
+        <div class="t1">数字中国合作伙伴</div>
+        <div class="t2">DIGITAL CHINA</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="nav-group">核心工作</div>
+      <button class="nav-item active" data-page="dashboard"><span class="ic">🏠</span><span>工作台</span></button>
+      <button class="nav-item" data-page="coop"><span class="ic">🤝</span><span>合作中心</span><span class="badge" id="badge-coop" style="display:none;">0</span></button>
+      <button class="nav-item" data-page="resource"><span class="ic">📦</span><span>资源中心</span></button>
+      <button class="nav-item" data-page="demand"><span class="ic">🎯</span><span>需求中心</span></button>
+      <button class="nav-item" data-page="project"><span class="ic">📁</span><span>项目中心</span></button>
+      <div class="nav-group">业务管理</div>
+      <button class="nav-item" data-page="customer"><span class="ic">👥</span><span>客户中心</span></button>
+      <button class="nav-item" data-page="contract"><span class="ic">📄</span><span>合同中心</span></button>
+      <button class="nav-item" data-page="finance"><span class="ic">💰</span><span>财务中心</span></button>
+      <button class="nav-item" data-page="ai"><span class="ic">🤖</span><span>AI中心</span></button>
+      <div class="nav-group">生态与设置</div>
+      <button class="nav-item" data-page="partner"><span class="ic">🔗</span><span>合作伙伴</span></button>
+      <button class="nav-item" data-page="data"><span class="ic">📊</span><span>数据中心</span></button>
+      <button class="nav-item" data-page="account"><span class="ic">⚙️</span><span>账户中心</span></button>
+      <div class="nav-group admin-only">管理专区</div>
+      <button class="nav-item admin-only" data-page="members"><span class="ic">👥</span><span>组织成员</span></button>
+      <button class="nav-item admin-only" data-page="roles"><span class="ic">🔐</span><span>角色权限</span></button>
+      <button class="nav-item admin-only" data-page="audit"><span class="ic">🧾</span><span>结算审核</span></button>
+      <button class="nav-item admin-only" data-page="stats"><span class="ic">📈</span><span>全量统计</span></button>
+      <button class="nav-item admin-only" data-page="security"><span class="ic">🛡️</span><span>安全设置</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      数字中国AI生态资源连接器<br>V1.0 · 2026年8月
+    </div>
+  </aside>
+
+  <!-- 主区 -->
+  <div class="main">
+    <header class="topbar">
+      <div class="breadcrumb">
+        数字中国合作伙伴
+        <span class="sub" id="breadcrumb-sub">· 工作台</span>
+      </div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <span>🔍</span>
+          <input id="globalSearch" placeholder="搜索资源 / 需求 / 项目..." onkeydown="if(event.key==='Enter')globalSearch()">
+        </div>
+        <button class="icon-btn" title="消息通知" onclick="switchPage('account')">
+          🔔<span class="dot"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- ===== 工作台 ===== -->
+      <section class="page active" id="page-dashboard">
+        <div class="page-head">
+          <div>
+            <h1>早上好，张总</h1>
+            <div class="desc">今日有 3 项待办需要处理，AI 为你匹配了 5 条新商机。</div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-outline" onclick="openModal('demand')">+ 发布需求</button>
+            <button class="btn btn-primary" onclick="openModal('resource')">+ 发布资源</button>
+          </div>
+        </div>
+
+        <div class="stat-grid" id="dashStats"></div>
+
+        <div class="grid-2">
+          <div>
+            <div class="card" style="margin-bottom:16px;">
+              <div class="card-head">
+                <h3>待办事项</h3>
+                <button class="more" onclick="switchPage('account')">全部待办 →</button>
+              </div>
+              <ul class="todo-list" id="dashTodos"></ul>
+            </div>
+            <div class="card">
+              <div class="card-head">
+                <h3>快捷入口</h3>
+                <span class="more">常用功能</span>
+              </div>
+              <div class="card-pad">
+                <div class="quick-grid">
+                  <button class="quick-btn" onclick="openModal('resource')">
+                    <div class="qi icon-red">📦</div>
+                    <div><div class="qt">发布资源</div><div class="qd">结构化描述供给能力</div></div>
+                  </button>
+                  <button class="quick-btn" onclick="openModal('demand')">
+                    <div class="qi icon-blue">🎯</div>
+                    <div><div class="qt">发布需求</div><div class="qd">描述你需要什么</div></div>
+                  </button>
+                  <button class="quick-btn" onclick="switchPage('ai')">
+                    <div class="qi icon-purple">🤖</div>
+                    <div><div class="qt">AI 咨询</div><div class="qd">智能诊断与合作匹配</div></div>
+                  </button>
+                  <button class="quick-btn" onclick="switchPage('customer')">
+                    <div class="qi icon-green">👥</div>
+                    <div><div class="qt">创建客户</div><div class="qd">录入线索与联系人</div></div>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card" style="margin-bottom:16px;">
+              <div class="card-head">
+                <h3>AI 智能推荐</h3>
+                <span class="more">按匹配度排序</span>
+              </div>
+              <div id="dashRecs"></div>
+            </div>
+            <div class="ai-panel">
+              <h3>AI 合作助手</h3>
+              <p>用一句话描述你的合作需求，AI 将为你智能匹配资源、生成合作方案。</p>
+              <div class="ai-input">
+                <input id="aiInput" placeholder="例如：我有一家广州3C工厂，想进入菲律宾市场" onkeydown="if(event.key==='Enter')aiAsk()">
+                <button class="btn btn-primary" onclick="aiAsk()">咨询</button>
+              </div>
+              <div class="ai-suggest">
+                <button class="ai-chip" onclick="aiAsk('帮我找跨境渠道资源')">找跨境渠道</button>
+                <button class="ai-chip" onclick="aiAsk('帮我分析企业数字化需求')">企业诊断</button>
+                <button class="ai-chip" onclick="aiAsk('生成本周经营报告')">经营周报</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 合作中心 ===== -->
+      <section class="page" id="page-coop">
+        <div class="page-head">
+          <div><h1>合作中心</h1><div class="desc">资源与需求汇聚、商机撮合、合作全生命周期管理</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('coop')">+ 发起合作</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>合作主题</th><th>合作类型</th><th>发起方</th><th>接收方</th><th>状态</th><th>有效期</th><th>操作</th></tr></thead>
+              <tbody id="coopTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 资源中心 ===== -->
+      <section class="page" id="page-resource">
+        <div class="page-head">
+          <div><h1>资源中心</h1><div class="desc">统一资源目录，结构化、可认证、可检索、可授权</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('resource')">+ 发布资源</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>资源名称</th><th>资源类型</th><th>区域</th><th>可见性</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead>
+              <tbody id="resourceTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 需求中心 ===== -->
+      <section class="page" id="page-demand">
+        <div class="page-head">
+          <div><h1>需求中心</h1><div class="desc">承载"我需要什么"，AI 分析与智能匹配</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('demand')">+ 发布需求</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>需求标题</th><th>场景</th><th>预算</th><th>地区</th><th>状态</th><th>截止时间</th><th>操作</th></tr></thead>
+              <tbody id="demandTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 项目中心 ===== -->
+      <section class="page" id="page-project">
+        <div class="page-head">
+          <div><h1>项目中心</h1><div class="desc">目标—计划—执行—成果—验收—结算 全流程协同</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('project')">+ 新建项目</button></div>
+        </div>
+        <div class="stat-grid" id="projectStats"></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>项目名称</th><th>客户</th><th>负责人</th><th>项目金额</th><th>进度</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody id="projectTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 客户中心 ===== -->
+      <section class="page" id="page-customer">
+        <div class="page-head">
+          <div><h1>客户中心</h1><div class="desc">线索、客户、联系人、商机与来源归属统一管理</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('customer')">+ 创建客户</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>客户名称</th><th>行业</th><th>联系人</th><th>电话</th><th>来源</th><th>客户级别</th><th>操作</th></tr></thead>
+              <tbody id="customerTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 合同中心 ===== -->
+      <section class="page" id="page-contract">
+        <div class="page-head">
+          <div><h1>合同中心</h1><div class="desc">模板、审批、签署、履约、变更、归档与预警</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('contract')">+ 新建合同</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>合同名称</th><th>合同类型</th><th>相对方</th><th>合同金额</th><th>签署状态</th><th>履约状态</th><th>操作</th></tr></thead>
+              <tbody id="contractTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 财务中心 ===== -->
+      <section class="page" id="page-finance">
+        <div class="page-head">
+          <div><h1>财务中心</h1><div class="desc">结算台账与可解释分佣，业务流、资金流、发票流相互印证</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('finance')">+ 创建结算单</button></div>
+        </div>
+        <div class="stat-grid" id="financeStats"></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>结算单号</th><th>关联项目</th><th>结算金额</th><th>分佣角色</th><th>状态</th><th>创建日期</th><th>操作</th></tr></thead>
+              <tbody id="financeTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AI中心 ===== -->
+      <section class="page" id="page-ai">
+        <div class="page-head">
+          <div><h1>AI 中心</h1><div class="desc">AI 合作助手 · 企业诊断 · 项目方案 · 资源匹配 · 数据分析</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="ai-panel" style="min-height:260px;">
+            <h3>AI 合作助手</h3>
+            <p>对话式诊断：理解自然语言需求，生成结构化需求草稿与匹配建议。</p>
+            <div class="ai-input">
+              <input id="aiInput2" placeholder="描述你的合作需求..." onkeydown="if(event.key==='Enter')aiAsk2()">
+              <button class="btn btn-primary" onclick="aiAsk2()">发送</button>
+            </div>
+            <div class="ai-suggest">
+              <button class="ai-chip" onclick="aiAsk2('帮我诊断企业的AI数字化现状')">企业诊断</button>
+              <button class="ai-chip" onclick="aiAsk2('帮我生成跨境电商合作方案')">项目方案</button>
+              <button class="ai-chip" onclick="aiAsk2('帮我匹配合适的技术服务商')">资源匹配</button>
+              <button class="ai-chip" onclick="aiAsk2('分析本季度经营数据')">数据分析</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>AI 对话记录</h3><span class="more">最近对话</span></div>
+            <div id="aiChatLog" class="card-pad" style="max-height:300px;overflow-y:auto;"></div>
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:16px;">
+          <div class="card card-pad">
+            <h3 style="font-size:14px;margin-bottom:8px;">🤖 智能匹配</h3>
+            <p style="font-size:12.5px;color:var(--text-sub);line-height:1.6;">综合主体、区域、能力、案例、报价、履约、评价评分，输出候选清单与匹配度。</p>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:14px;margin-bottom:8px;">📋 方案生成</h3>
+            <p style="font-size:12.5px;color:var(--text-sub);line-height:1.6;">组合服务商、OPC、渠道、物流、达人资源，生成合作路径与预算建议。</p>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:14px;margin-bottom:8px;">🧩 任务拆解</h3>
+            <p style="font-size:12.5px;color:var(--text-sub);line-height:1.6;">将项目目标拆分为里程碑与可执行任务包，明确角色、交付物与验收标准。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 合作伙伴 ===== -->
+      <section class="page" id="page-partner">
+        <div class="page-head">
+          <div><h1>合作伙伴</h1><div class="desc">邀请、团队、渠道关系、等级、权益与分佣关系</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('partner')">+ 邀请伙伴</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>伙伴名称</th><th>伙伴等级</th><th>合作标签</th><th>服务区域</th><th>贡献项目</th><th>累计分佣</th><th>操作</th></tr></thead>
+              <tbody id="partnerTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 我的推广 -->
+        <div class="grid-2" style="margin-top:16px;">
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">我的推广</h3>
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div id="qrcodeBox" style="width:132px;height:132px;border:1px solid #E6E8EC;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;"></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:12.5px;color:var(--text-sub);margin-bottom:6px;">供应链专属推广链接（含唯一邀请码，被邀请者通过链接/扫码加入后自动成为您的下级）</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <input id="inviteLink" readonly style="flex:1;padding:9px 12px;border:1px solid #E6E8EC;border-radius:8px;font-size:12.5px;color:var(--text-main);background:#F8FAFC;">
+                  <button class="btn btn-outline btn-sm" onclick="copyInviteLink()" style="flex:none;">复制链接</button>
+                </div>
+                <div style="font-size:11.5px;color:var(--text-mute);margin-top:6px;">邀请码：<span id="inviteCodeText" style="font-weight:600;color:var(--red);"></span></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px dashed #E6E8EC;">
+              <div style="font-size:12.5px;color:var(--text-sub);margin-bottom:6px;">OPC 邀请链接（含唯一邀请码，被邀请者通过链接/扫码加入后自动成为您的下级）</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                <input id="opcInviteLink" readonly style="flex:1;padding:9px 12px;border:1px solid #E6E8EC;border-radius:8px;font-size:12.5px;color:var(--text-main);background:#F8FAFC;">
+                <button class="btn btn-outline btn-sm" onclick="copyOpcInviteLink()" style="flex:none;">复制链接</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:16px;">
+                <div id="qrcodeBoxOpc" style="width:132px;height:132px;border:1px solid #E6E8EC;border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;"></div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-size:11.5px;color:var(--text-mute);">OPC 邀请码：<span id="opcInviteCodeText" style="font-weight:600;color:var(--red);"></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">推广数据</h3>
+            <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);">
+              <div class="stat-card"><div class="icon icon-red">👥</div><div class="label">直接下级</div><div class="value" id="statLevel1">0</div></div>
+              <div class="stat-card"><div class="icon icon-blue">🌱</div><div class="label">二级下级</div><div class="value" id="statLevel2">0</div></div>
+              <div class="stat-card"><div class="icon icon-green">🔗</div><div class="label">总下级</div><div class="value" id="statTotal">0</div></div>
+              <div class="stat-card"><div class="icon" style="background:#fff3e0;color:#e65100;">💰</div><div class="label">预估分佣</div><div class="value" id="statCommission">¥0</div><div style="font-size:10px;color:var(--text-mute);margin-top:2px;">按人数估算·仅供参考</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 内推团队 -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-head"><h3>内推团队 · 我的下级</h3><span style="font-size:12px;color:var(--text-mute);">一级下级为直接邀请，二级下级为下级再邀请</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>成员名称</th><th>内推层级</th><th>邀请人</th><th>加入时间</th></tr></thead>
+              <tbody id="referralTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 数据中心 ===== -->
+      <section class="page" id="page-data">
+        <div class="page-head">
+          <div><h1>数据中心</h1><div class="desc">合作、项目、客户、收益、转化、区域与行业分析</div></div>
+        </div>
+        <div class="stat-grid" id="dataStats"></div>
+        <div class="grid-2">
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">转化漏斗</h3>
+            <div id="funnelChart"></div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">行业分布</h3>
+            <div id="industryChart"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 账户中心 ===== -->
+      <section class="page" id="page-account">
+        <div class="page-head">
+          <div><h1>账户中心</h1><div class="desc">企业认证、合作认证、成员权限、权益等级与设置</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card card-pad">
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+              <div style="width:60px;height:60px;border-radius:12px;background:linear-gradient(135deg,var(--red),#E23D56);display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700;">张</div>
+              <div>
+                <div style="font-size:16px;font-weight:600;">张总（张三）</div>
+                <div style="font-size:12.5px;color:var(--text-sub);">战略合作伙伴 · 组织管理员</div>
+                <span class="tag tag-red" style="margin-top:6px;">已认证</span>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--border);padding-top:16px;">
+              <div style="font-size:13px;color:var(--text-sub);margin-bottom:10px;">权益等级进度</div>
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <span class="tag tag-red">普通</span><span class="tag tag-red">认证</span><span class="tag tag-red">城市</span><span class="tag tag-red">区域</span><span class="tag tag-green">战略</span>
+              </div>
+              <div style="height:8px;background:#F5F5F5;border-radius:4px;overflow:hidden;"><div style="width:100%;height:100%;background:var(--red);"></div></div>
+              <div style="font-size:12px;color:var(--text-mute);margin-top:6px;">当前等级：战略合作伙伴 · 最高等级</div>
+            </div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">消息通知</h3>
+            <ul class="todo-list" id="notifyList"></ul>
+          </div>
+        </div>
+        <div class="card admin-only" id="memberCard" style="margin-top:16px;display:none;">
+          <div class="card-head"><h3>组织成员</h3><button class="btn btn-sm btn-outline" onclick="openModal('member')">+ 添加成员</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>成员姓名</th><th>角色</th><th>手机号</th><th>状态</th><th>加入时间</th><th>操作</th></tr></thead>
+              <tbody id="memberTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 组织成员管理（管理员） ===== -->
+      <section class="page admin-only" id="page-members">
+        <div class="page-head">
+          <div><h1>组织成员管理</h1><div class="desc">管理组织内全部成员、角色与权限</div></div>
+          <div class="actions"><button class="btn btn-primary" onclick="openModal('member')">+ 添加成员</button></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>成员姓名</th><th>角色</th><th>手机号</th><th>状态</th><th>加入时间</th><th>操作</th></tr></thead>
+              <tbody id="adminMemberTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 角色权限设置（管理员） ===== -->
+      <section class="page admin-only" id="page-roles">
+        <div class="page-head">
+          <div><h1>角色权限设置</h1><div class="desc">配置各角色的菜单访问与操作权限</div></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>角色</th><th>工作台</th><th>合作/资源/需求/项目</th><th>客户/合同/财务</th><th>数据统计</th><th>结算审核</th><th>成员与权限管理</th></tr></thead>
+              <tbody>
+                <tr><td><strong>组织管理员</strong></td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td><strong>业务人员</strong></td><td>✅</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td><strong>项目人员</strong></td><td>✅</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr>
+                <tr><td><strong>财务人员</strong></td><td>✅</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td></tr>
+                <tr><td><strong>只读</strong></td><td>✅</td><td>只读</td><td>只读</td><td>只读</td><td>❌</td><td>❌</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card card-pad" style="margin-top:16px;">
+          <h3 style="font-size:15px;margin-bottom:12px;">权限说明</h3>
+          <p style="font-size:13px;color:var(--text-sub);line-height:1.8;">✅ 表示可访问并操作；❌ 表示不可见。管理员可在此为成员分配角色，角色决定其可见菜单与操作权限。</p>
+        </div>
+      </section>
+
+      <!-- ===== 结算单审核（管理员） ===== -->
+      <section class="page admin-only" id="page-audit">
+        <div class="page-head">
+          <div><h1>结算单审核</h1><div class="desc">审核合作商提交的结算申请，确认分佣与开票</div></div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>结算单号</th><th>关联项目</th><th>结算金额</th><th>提交方</th><th>状态</th><th>提交日期</th><th>操作</th></tr></thead>
+              <tbody id="auditTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 全量数据统计（管理员） ===== -->
+      <section class="page admin-only" id="page-stats">
+        <div class="page-head">
+          <div><h1>全量数据统计</h1><div class="desc">平台全量合作、项目、客户与收益分析</div></div>
+        </div>
+        <div class="stat-grid" id="adminStats"></div>
+        <div class="grid-2">
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">合作漏斗</h3>
+            <div id="adminFunnel"></div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">收益趋势</h3>
+            <div id="adminTrend"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== 账户安全设置（管理员） ===== -->
+      <section class="page admin-only" id="page-security">
+        <div class="page-head">
+          <div><h1>账户安全设置</h1><div class="desc">登录密码、会话与安全策略配置</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">修改登录密码</h3>
+            <div class="form-grid">
+              <div class="form-item full"><label>当前密码</label><input type="password" id="oldPass" placeholder="请输入当前密码"></div>
+              <div class="form-item full"><label>新密码</label><input type="password" id="newPass" placeholder="请输入新密码"></div>
+              <div class="form-item full"><label>确认新密码</label><input type="password" id="confirmPass" placeholder="再次输入新密码"></div>
+            </div>
+            <div style="margin-top:14px;"><button class="btn btn-primary" onclick="changePass()">确认修改</button></div>
+          </div>
+          <div class="card card-pad">
+            <h3 style="font-size:15px;margin-bottom:16px;">安全策略</h3>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <label style="display:flex;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--text-main);"><span>登录异常提醒</span><input type="checkbox" checked></label>
+              <label style="display:flex;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--text-main);"><span>异地登录二次验证</span><input type="checkbox" checked></label>
+              <label style="display:flex;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--text-main);"><span>敏感操作短信验证</span><input type="checkbox" checked></label>
+              <label style="display:flex;align-items:center;justify-content:space-between;font-size:13.5px;color:var(--text-main);"><span>登录日志留痕</span><input type="checkbox" checked></label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- 模态框容器 -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <h3 id="modalTitle">标题</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot">
+      <button class="btn btn-ghost" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" id="modalSubmit">保存</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- 管理者登录弹窗 -->
+<div class="modal-mask" id="loginMask">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-head">
+      <h3>管理者登录</h3>
+      <button class="modal-close" onclick="closeLogin()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-item" style="margin-bottom:14px;">
+        <label>账号</label>
+        <input id="loginUser" placeholder="请输入管理者账号" value="admin">
+      </div>
+      <div class="form-item" style="margin-bottom:6px;">
+        <label>密码</label>
+        <input id="loginPass" type="password" placeholder="请输入登录密码" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="font-size:12px;color:var(--text-mute);margin-top:8px;">演示账号：admin / 密码 123456</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeLogin()">取消</button>
+      <button class="btn btn-primary" onclick="doLogin()">登录</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ========== 数据层 ========== */
+const KEYS = {
+  resources:'szhg_resources',
+  demands:'szhg_demands',
+  coops:'szhg_coops',
+  projects:'szhg_projects',
+  customers:'szhg_customers',
+  contracts:'szhg_contracts',
+  finances:'szhg_finances',
+  partners:'szhg_partners',
+  members:'szhg_members',
+  todos:'szhg_todos',
+  notifies:'szhg_notifies',
+  aiLogs:'szhg_ailogs',
+  referrals:'szhg_referrals',
+  inviteCode:'szhg_invite_code',
+  opcInviteCode:'szhg_opc_invite_code'
+};
+
+const store = {
+  get(k, def){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; }catch(e){ return def; } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)); }
+};
+
+/* ========== Mock 初始数据 ========== */
+function seed(){
+  if(!store.get(KEYS.resources, null)){
+    store.set(KEYS.resources, [
+      {id:1, name:'广州3C产品供应链资源', type:'供应链/工厂', region:'广东·广州', visibility:'合作后可见', status:'已上架', time:'2026-08-12'},
+      {id:2, name:'跨境TikTok渠道资源', type:'渠道资源', region:'东南亚·菲律宾', visibility:'公开', status:'已上架', time:'2026-08-11'},
+      {id:3, name:'AI企业数字化服务能力', type:'技术/服务资源', region:'全国', visibility:'公开', status:'已上架', time:'2026-08-10'},
+      {id:4, name:'高校产教融合实训基地', type:'场地资源', region:'广东·深圳', visibility:'平台可见', status:'待审核', time:'2026-08-09'}
+    ]);
+  }
+  if(!store.get(KEYS.demands, null)){
+    store.set(KEYS.demands, [
+      {id:1, title:'推广一款TWS降噪耳机', scene:'市场拓展', budget:'30万元', region:'东南亚', status:'招募中', deadline:'2026-09-30'},
+      {id:2, title:'企业AI降本增效诊断', scene:'企业需求', budget:'8万元', region:'广东', status:'洽谈中', deadline:'2026-08-30'},
+      {id:3, title:'园区招商数字化平台建设', scene:'政府项目', budget:'150万元', region:'全国', status:'招募中', deadline:'2026-10-15'}
+    ]);
+  }
+  if(!store.get(KEYS.coops, null)){
+    store.set(KEYS.coops, [
+      {id:1, topic:'TWS耳机东南亚渠道合作', type:'渠道合作', from:'李总', to:'张总', status:'洽谈中', expire:'2026-08-31'},
+      {id:2, topic:'AI诊断服务联合交付', type:'服务合作', from:'张总', to:'王总', status:'已转项目', expire:'2026-09-15'},
+      {id:3, topic:'园区招商平台共建', type:'项目合作', from:'赵总', to:'张总', status:'待处理', expire:'2026-08-25'}
+    ]);
+  }
+  if(!store.get(KEYS.projects, null)){
+    store.set(KEYS.projects, [
+      {id:1, name:'TWS耳机东南亚市场推广', customer:'华强数码', owner:'李总', amount:'30万元', progress:65, status:'进行中'},
+      {id:2, name:'某制造企业AI数字化诊断', customer:'宏远制造', owner:'王总', amount:'8万元', progress:40, status:'进行中'},
+      {id:3, name:'园区招商数字化平台', customer:'高新产业园区', owner:'赵总', amount:'150万元', progress:20, status:'待启动'},
+      {id:4, name:'高校人才实训合作', customer:'南粤职业学院', owner:'陈总', amount:'12万元', progress:100, status:'已完成'}
+    ]);
+  }
+  if(!store.get(KEYS.customers, null)){
+    store.set(KEYS.customers, [
+      {id:1, name:'华强数码有限公司', industry:'消费电子', contact:'李总', phone:'138****8888', source:'伙伴引荐', level:'A级'},
+      {id:2, name:'宏远制造集团', industry:'智能制造', contact:'王总', phone:'139****6666', source:'需求发布', level:'B级'},
+      {id:3, name:'高新产业园区管委会', industry:'政府/园区', contact:'赵总', phone:'136****9999', source:'活动导入', level:'A级'},
+      {id:4, name:'南粤职业学院', industry:'院校', contact:'陈总', phone:'135****2222', source:'人工录入', level:'B级'}
+    ]);
+  }
+  if(!store.get(KEYS.contracts, null)){
+    store.set(KEYS.contracts, [
+      {id:1, name:'TWS耳机渠道合作合同', type:'渠道合同', party:'华强数码', amount:'30万元', sign:'已签署', perform:'履约中'},
+      {id:2, name:'AI诊断服务采购合同', type:'服务合同', party:'宏远制造', amount:'8万元', sign:'待签署', perform:'未开始'},
+      {id:3, name:'招商平台技术服务合同', type:'服务合同', party:'高新园区', amount:'150万元', sign:'审批中', perform:'未开始'}
+    ]);
+  }
+  if(!store.get(KEYS.finances, null)){
+    store.set(KEYS.finances, [
+      {id:1, no:'JS20260801', project:'TWS耳机东南亚市场推广', amount:'12万元', role:'渠道伙伴', status:'已确认', date:'2026-08-10'},
+      {id:2, no:'JS20260802', project:'AI数字化诊断', amount:'4万元', role:'服务商', status:'待确认', date:'2026-08-12'},
+      {id:3, no:'JS20260803', project:'人才实训合作', amount:'6万元', role:'OPC执行者', status:'已支付', date:'2026-08-08'}
+    ]);
+  }
+  if(!store.get(KEYS.partners, null)){
+    store.set(KEYS.partners, [
+      {id:1, name:'张总（张三）', level:'战略合作伙伴', tags:'AI/跨境', region:'全国', projects:3, commission:'18.6万元'},
+      {id:2, name:'李总（李四）', level:'城市合作伙伴', tags:'3C/渠道', region:'广东·广州', projects:2, commission:'8.2万元'},
+      {id:3, name:'王总（王五）', level:'认证合作伙伴', tags:'制造/服务', region:'珠三角', projects:1, commission:'3.5万元'},
+      {id:4, name:'赵总（赵六）', level:'区域合作伙伴', tags:'园区/招商', region:'华南', projects:2, commission:'11.8万元'}
+    ]);
+  }
+  if(!store.get(KEYS.members, null)){
+    store.set(KEYS.members, [
+      {id:1, name:'张总（张三）', role:'组织管理员', phone:'138****8888', status:'在职', join:'2026-01-05'},
+      {id:2, name:'刘经理', role:'业务人员', phone:'137****1111', status:'在职', join:'2026-02-18'},
+      {id:3, name:'陈会计', role:'财务人员', phone:'136****2222', status:'在职', join:'2026-03-20'}
+    ]);
+  }
+  if(!store.get(KEYS.todos, null)){
+    store.set(KEYS.todos, [
+      {id:1, type:'red', text:'赵总的合作申请待处理', time:'10分钟前'},
+      {id:2, type:'orange', text:'TWS耳机项目里程碑即将到期', time:'2小时前'},
+      {id:3, type:'blue', text:'宏远制造合同待签署', time:'今天'},
+      {id:4, type:'red', text:'资源"高校实训基地"待审核', time:'昨天'},
+      {id:5, type:'orange', text:'结算单 JS20260802 待确认', time:'昨天'}
+    ]);
+  }
+  if(!store.get(KEYS.notifies, null)){
+    store.set(KEYS.notifies, [
+      {id:1, type:'red', text:'您有 1 条新的合作申请', time:'10分钟前'},
+      {id:2, type:'blue', text:'AI 已为您匹配 3 条新商机', time:'1小时前'},
+      {id:3, type:'orange', text:'合同到期提醒：渠道合作合同', time:'今天'},
+      {id:4, type:'blue', text:'本周经营报告已生成', time:'昨天'}
+    ]);
+  }
+  if(!store.get(KEYS.aiLogs, null)){
+    store.set(KEYS.aiLogs, []);
+  }
+  if(!store.get(KEYS.inviteCode, null)){
+    store.set(KEYS.inviteCode, 'SZ' + Math.random().toString(36).slice(2,8).toUpperCase());
+  }
+  if(!store.get(KEYS.referrals, null)){
+    store.set(KEYS.referrals, [
+      {id:1, name:'李总（李四）', level:1, inviter:'张总（张三）', join:'2026-06-12'},
+      {id:2, name:'王总（王五）', level:1, inviter:'张总（张三）', join:'2026-07-03'},
+      {id:3, name:'赵总（赵六）', level:2, inviter:'李总（李四）', join:'2026-07-20'}
+    ]);
+  }
+}
+
+/* ========== 工具函数 ========== */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function toast(msg, type){
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast' + (type==='error' ? ' error' : '');
+  el.innerHTML = `<span class="t-ic">${type==='error' ? '⚠️' : '✅'}</span><span>${esc(msg)}</span>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 2500);
+}
+function genId(){ return Date.now() + Math.floor(Math.random()*1000); }
+function now(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+
+/* ========== 登录与角色权限 ========== */
+const AUTH_KEY = 'szhg_auth';
+const adminPages = ['members','roles','audit','stats','security'];
+function getAuth(){
+  return {role:'admin', name:'管理员', title:'平台管理者'};
+}
+function setAuth(a){ store.set(AUTH_KEY, a); }
+function applyRole(){
+  const a = getAuth();
+  const isAdmin = a.role === 'admin';
+  document.querySelectorAll('.admin-only').forEach(el=>{
+    el.style.display = isAdmin ? '' : 'none';
+  });
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  if(loginBtn) loginBtn.style.display = isAdmin ? 'none' : '';
+  if(logoutBtn) logoutBtn.style.display = isAdmin ? '' : 'none';
+  const am = document.getElementById('avatarMark');
+  const an = document.getElementById('avatarName');
+  const ar = document.getElementById('avatarRole');
+  if(am) am.textContent = isAdmin ? '管' : '张';
+  if(an) an.textContent = isAdmin ? '管理员' : '张总';
+  if(ar) ar.textContent = isAdmin ? '平台管理者' : '战略合作伙伴';
+  const h1 = document.querySelector('#page-dashboard .page-head h1');
+  if(h1) h1.textContent = isAdmin ? '管理员，欢迎回来' : '早上好，张总';
+  const active = document.querySelector('.page.active');
+  if(active && adminPages.includes(active.id.replace('page-','')) && !isAdmin){
+    switchPage('dashboard');
+  }
+}
+function openLogin(){
+  const u = document.getElementById('loginUser');
+  if(u) u.value = 'admin';
+  const p = document.getElementById('loginPass');
+  if(p) p.value = '';
+  document.getElementById('loginMask').classList.add('open');
+  setTimeout(()=>{ const pp = document.getElementById('loginPass'); if(pp) pp.focus(); }, 100);
+}
+function closeLogin(){ document.getElementById('loginMask').classList.remove('open'); }
+function doLogin(){
+  const u = (document.getElementById('loginUser').value||'').trim();
+  const p = (document.getElementById('loginPass').value||'').trim();
+  if(u === 'admin' && p === '123456'){
+    setAuth({role:'admin', name:'管理员', title:'平台管理者'});
+    closeLogin();
+    applyRole();
+    toast('管理者登录成功');
+    switchPage('dashboard');
+  } else {
+    toast('账号或密码错误（演示账号：admin / 123456）','error');
+  }
+}
+function logout(){
+  setAuth({role:'partner', name:'张总', title:'战略合作伙伴'});
+  applyRole();
+  switchPage('dashboard');
+  toast('已退出登录，切回合作商视角');
+}
+function changePass(){
+  const oldP = (document.getElementById('oldPass').value||'').trim();
+  const newP = (document.getElementById('newPass').value||'').trim();
+  const conf = (document.getElementById('confirmPass').value||'').trim();
+  if(!oldP || !newP || !conf){ toast('请完整填写密码','error'); return; }
+  if(newP !== conf){ toast('两次输入的新密码不一致','error'); return; }
+  toast('密码修改成功（演示）');
+  document.getElementById('oldPass').value='';
+  document.getElementById('newPass').value='';
+  document.getElementById('confirmPass').value='';
+}
+document.getElementById('loginMask').addEventListener('click', function(e){
+  if(e.target === this) closeLogin();
+});
+
+/* ========== 页面切换 ========== */
+const pageNames = {
+  dashboard:'工作台', coop:'合作中心', resource:'资源中心', demand:'需求中心',
+  project:'项目中心', customer:'客户中心', contract:'合同中心', finance:'财务中心',
+  ai:'AI中心', partner:'合作伙伴', data:'数据中心', account:'账户中心',
+  members:'组织成员', roles:'角色权限', audit:'结算审核', stats:'全量统计', security:'安全设置'
+};
+function switchPage(page){
+  if(adminPages.includes(page) && getAuth().role !== 'admin'){
+    toast('该功能仅管理者可用，请先登录','error');
+    openLogin();
+    return;
+  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav = document.querySelector(`.nav-item[data-page="${page}"]`);
+  if(nav) nav.classList.add('active');
+  document.getElementById('breadcrumb-sub').textContent = '· ' + pageNames[page];
+  renderAll();
+}
+
+/* ========== 导航事件 ========== */
+document.getElementById('nav').addEventListener('click', function(e){
+  const btn = e.target.closest('.nav-item');
+  if(btn){ switchPage(btn.dataset.page); }
+});
+
+/* ========== 模态框 ========== */
+let modalMode = null;   // 当前模态框类型
+let editId = null;      // 编辑的 id
+let currentSubmit = null; // 提交处理函数
+
+function openModal(type, id){
+  modalMode = type; editId = id || null;
+  const box = document.getElementById('modalBox');
+  box.classList.remove('wide');
+  document.getElementById('modalBody').innerHTML = buildForm(type, id);
+  const titles = {
+    coop:'发起合作', resource:'发布资源', demand:'发布需求', project:'新建项目',
+    customer:'创建客户', contract:'新建合同', finance:'创建结算单', partner:'邀请伙伴', member:'添加成员'
+  };
+  document.getElementById('modalTitle').textContent = id ? ('编辑 · ' + titles[type]) : titles[type];
+  if(type==='demand') box.classList.add('wide');
+  document.getElementById('modalMask').classList.add('open');
+  currentSubmit = makeSubmit(type);
+  if(type==='partner') renderInviteModal();
+}
+function closeModal(){
+  document.getElementById('modalMask').classList.remove('open');
+  modalMode = null; editId = null; currentSubmit = null;
+}
+document.getElementById('modalMask').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+document.getElementById('modalSubmit').addEventListener('click', function(){
+  if(currentSubmit) currentSubmit();
+});
+
+function buildForm(type, id){
+  const data = id ? store.get(mapKey(type)).find(x=>x.id===id) : {};
+  if(type==='coop'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>合作主题<span class="req">*</span></label><input id="f1" value="${esc(data.topic)}" placeholder="如：TWS耳机东南亚渠道合作"></div>
+      <div class="form-item"><label>合作类型<span class="req">*</span></label><select id="f2">
+        <option ${data.type==='渠道合作'?'selected':''}>渠道合作</option>
+        <option ${data.type==='服务合作'?'selected':''}>服务合作</option>
+        <option ${data.type==='项目合作'?'selected':''}>项目合作</option>
+        <option ${data.type==='资源合作'?'selected':''}>资源合作</option>
+      </select></div>
+      <div class="form-item"><label>发起方<span class="req">*</span></label><input id="f3" value="${esc(data.from||'张总')}" placeholder="如：张总"></div>
+      <div class="form-item"><label>接收方<span class="req">*</span></label><input id="f4" value="${esc(data.to)}" placeholder="如：李总"></div>
+      <div class="form-item"><label>有效期</label><input id="f5" type="date" value="${esc(data.expire)}"></div>
+    </div>`;
+  }
+  if(type==='resource'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>资源名称<span class="req">*</span></label><input id="f1" value="${esc(data.name)}" placeholder="如：跨境TikTok渠道资源"></div>
+      <div class="form-item"><label>资源类型<span class="req">*</span></label><select id="f2">
+        ${['供应链/工厂','渠道资源','技术/服务资源','企业/客户资源','人才资源','场地资源','资金/政策资源'].map(t=>`<option ${data.type===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>区域<span class="req">*</span></label><input id="f3" value="${esc(data.region)}" placeholder="如：广东·广州"></div>
+      <div class="form-item"><label>可见性</label><select id="f4">
+        ${['公开','平台可见','合作后可见','指定对象可见'].map(t=>`<option ${data.visibility===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>状态</label><select id="f5">
+        ${['草稿','待审核','已上架','已下架','已失效','已驳回'].map(t=>`<option ${data.status===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+    </div>`;
+  }
+  if(type==='demand'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>需求标题<span class="req">*</span></label><input id="f1" value="${esc(data.title)}" placeholder="如：推广一款TWS降噪耳机"></div>
+      <div class="form-item"><label>场景<span class="req">*</span></label><select id="f2">
+        ${['企业需求','政府项目','院校实训','招商项目','市场拓展','供应链','技术','人才','融资'].map(t=>`<option ${data.scene===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>预算</label><input id="f3" value="${esc(data.budget)}" placeholder="如：30万元"></div>
+      <div class="form-item"><label>地区</label><input id="f4" value="${esc(data.region)}" placeholder="如：东南亚"></div>
+      <div class="form-item"><label>截止时间</label><input id="f5" type="date" value="${esc(data.deadline)}"></div>
+      <div class="form-item full"><label>需求背景与目标</label><textarea id="f6" placeholder="描述需求背景、目标、交付物要求...">${esc(data.desc||'')}</textarea></div>
+    </div>`;
+  }
+  if(type==='project'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>项目名称<span class="req">*</span></label><input id="f1" value="${esc(data.name)}" placeholder="如：TWS耳机东南亚市场推广"></div>
+      <div class="form-item"><label>客户<span class="req">*</span></label><input id="f2" value="${esc(data.customer)}" placeholder="如：华强数码"></div>
+      <div class="form-item"><label>负责人</label><input id="f3" value="${esc(data.owner)}" placeholder="如：李总"></div>
+      <div class="form-item"><label>项目金额</label><input id="f4" value="${esc(data.amount)}" placeholder="如：30万元"></div>
+      <div class="form-item"><label>状态</label><select id="f5">
+        ${['待启动','进行中','暂停','待验收','整改中','已完成','已终止'].map(t=>`<option ${data.status===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item full"><label>进度（%）</label><input id="f6" type="number" min="0" max="100" value="${esc(data.progress??0)}"></div>
+    </div>`;
+  }
+  if(type==='customer'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>客户名称<span class="req">*</span></label><input id="f1" value="${esc(data.name)}" placeholder="如：华强数码有限公司"></div>
+      <div class="form-item"><label>行业</label><input id="f2" value="${esc(data.industry)}" placeholder="如：消费电子"></div>
+      <div class="form-item"><label>客户级别</label><select id="f3">
+        ${['A级','B级','C级'].map(t=>`<option ${data.level===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>联系人</label><input id="f4" value="${esc(data.contact)}" placeholder="如：李总"></div>
+      <div class="form-item"><label>电话</label><input id="f5" value="${esc(data.phone)}" placeholder="如：138****8888"></div>
+      <div class="form-item full"><label>来源</label><select id="f6">
+        ${['伙伴引荐','需求发布','活动导入','人工录入','API同步'].map(t=>`<option ${data.source===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+    </div>`;
+  }
+  if(type==='contract'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>合同名称<span class="req">*</span></label><input id="f1" value="${esc(data.name)}" placeholder="如：TWS耳机渠道合作合同"></div>
+      <div class="form-item"><label>合同类型</label><select id="f2">
+        ${['渠道合同','服务合同','采购合同','保密合同','合作合同'].map(t=>`<option ${data.type===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>相对方<span class="req">*</span></label><input id="f3" value="${esc(data.party)}" placeholder="如：华强数码"></div>
+      <div class="form-item"><label>合同金额</label><input id="f4" value="${esc(data.amount)}" placeholder="如：30万元"></div>
+      <div class="form-item"><label>签署状态</label><select id="f5">
+        ${['草稿','审批中','待签署','已签署'].map(t=>`<option ${data.sign===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item full"><label>履约状态</label><select id="f6">
+        ${['未开始','履约中','已完成','已解除','已作废'].map(t=>`<option ${data.perform===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+    </div>`;
+  }
+  if(type==='finance'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>关联项目<span class="req">*</span></label><input id="f1" value="${esc(data.project)}" placeholder="如：TWS耳机东南亚市场推广"></div>
+      <div class="form-item"><label>结算金额<span class="req">*</span></label><input id="f2" value="${esc(data.amount)}" placeholder="如：12万元"></div>
+      <div class="form-item"><label>分佣角色</label><select id="f3">
+        ${['渠道伙伴','区域伙伴','服务商','OPC执行者','平台'].map(t=>`<option ${data.role===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>状态</label><select id="f4">
+        ${['草稿','待确认','有异议','已确认','待支付','已支付','已冲销'].map(t=>`<option ${data.status===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+    </div>`;
+  }
+  if(type==='partner'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>伙伴名称<span class="req">*</span></label><input id="f1" value="${esc(data.name)}" placeholder="如：陈总（陈七）"></div>
+      <div class="form-item"><label>伙伴等级</label><select id="f2">
+        ${['普通合作伙伴','认证合作伙伴','城市合作伙伴','区域合作伙伴','战略合作伙伴'].map(t=>`<option ${data.level===t?'selected':''}>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>合作标签</label><input id="f3" value="${esc(data.tags)}" placeholder="如：AI/跨境"></div>
+      <div class="form-item"><label>服务区域</label><input id="f4" value="${esc(data.region)}" placeholder="如：全国"></div>
+    </div>
+    <div style="margin-top:14px;padding:14px;background:#FDF5F6;border:1px dashed #E6B3BD;border-radius:10px;">
+      <div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:10px;">供应链专属推广链接 · 邀请码</div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <canvas id="modalQrBox" width="108" height="108" style="flex:none;border-radius:8px;background:#fff;border:1px solid #E6E8EC;"></canvas>
+        <div style="flex:1;min-width:0;">
+          <input id="modalInviteLink" readonly style="width:100%;padding:8px 10px;border:1px solid #E6E8EC;border-radius:6px;font-size:12px;color:var(--text-main);background:#fff;box-sizing:border-box;">
+          <div style="font-size:11px;color:var(--text-sub);margin-top:6px;">邀请码：<span id="modalInviteCode" style="font-weight:600;color:var(--red);"></span> · 被邀请者加入后自动成为您的下级</div>
+        </div>
+      </div>
+    </div>`;
+  }
+  if(type==='member'){
+    return `<div class="form-grid">
+      <div class="form-item full"><label>成员姓名<span class="req">*</span></label><input id="f1" placeholder="如：周经理"></div>
+      <div class="form-item"><label>角色</label><select id="f2">
+        ${['组织管理员','业务人员','项目人员','财务人员','只读'].map(t=>`<option>${t}</option>`).join('')}
+      </select></div>
+      <div class="form-item"><label>手机号</label><input id="f3" placeholder="如：138****0000"></div>
+    </div>`;
+  }
+  return '';
+}
+function mapKey(type){
+  const m = {coop:KEYS.coops, resource:KEYS.resources, demand:KEYS.demands, project:KEYS.projects,
+    customer:KEYS.customers, contract:KEYS.contracts, finance:KEYS.finances, partner:KEYS.partners, member:KEYS.members};
+  return m[type];
+}
+function makeSubmit(type){
+  const key = mapKey(type);
+  return function(){
+    const list = store.get(key, []);
+    if(type==='coop'){
+      const topic = document.getElementById('f1').value.trim();
+      if(!topic){ toast('请填写合作主题','error'); return; }
+      const obj = {id:editId||genId(), topic, type:document.getElementById('f2').value,
+        from:document.getElementById('f3').value.trim()||'张总', to:document.getElementById('f4').value.trim()||'李总',
+        status:editId?(list.find(x=>x.id===editId)?.status||'洽谈中'):'待处理',
+        expire:document.getElementById('f5').value || '2026-12-31'};
+      save(list, obj, key);
+    } else if(type==='resource'){
+      const name = document.getElementById('f1').value.trim();
+      if(!name){ toast('请填写资源名称','error'); return; }
+      const obj = {id:editId||genId(), name, type:document.getElementById('f2').value,
+        region:document.getElementById('f3').value.trim()||'全国',
+        visibility:document.getElementById('f4').value, status:document.getElementById('f5').value, time:now()};
+      save(list, obj, key);
+    } else if(type==='demand'){
+      const title = document.getElementById('f1').value.trim();
+      if(!title){ toast('请填写需求标题','error'); return; }
+      const obj = {id:editId||genId(), title, scene:document.getElementById('f2').value,
+        budget:document.getElementById('f3').value.trim()||'待定', region:document.getElementById('f4').value.trim()||'全国',
+        status:editId?(list.find(x=>x.id===editId)?.status||'招募中'):'招募中',
+        deadline:document.getElementById('f5').value || '2026-12-31', desc:document.getElementById('f6').value.trim()};
+      save(list, obj, key);
+    } else if(type==='project'){
+      const name = document.getElementById('f1').value.trim();
+      if(!name){ toast('请填写项目名称','error'); return; }
+      const obj = {id:editId||genId(), name, customer:document.getElementById('f2').value.trim()||'待定',
+        owner:document.getElementById('f3').value.trim()||'张总', amount:document.getElementById('f4').value.trim()||'待定',
+        status:document.getElementById('f5').value, progress:parseInt(document.getElementById('f6').value)||0};
+      save(list, obj, key);
+    } else if(type==='customer'){
+      const name = document.getElementById('f1').value.trim();
+      if(!name){ toast('请填写客户名称','error'); return; }
+      const obj = {id:editId||genId(), name, industry:document.getElementById('f2').value.trim()||'其他',
+        level:document.getElementById('f3').value, contact:document.getElementById('f4').value.trim()||'待定',
+        phone:document.getElementById('f5').value.trim()||'—', source:document.getElementById('f6').value};
+      save(list, obj, key);
+    } else if(type==='contract'){
+      const name = document.getElementById('f1').value.trim();
+      if(!name){ toast('请填写合同名称','error'); return; }
+      const obj = {id:editId||genId(), name, type:document.getElementById('f2').value,
+        party:document.getElementById('f3').value.trim()||'待定', amount:document.getElementById('f4').value.trim()||'待定',
+        sign:document.getElementById('f5').value, perform:document.getElementById('f6').value};
+      save(list, obj, key);
+    } else if(type==='finance'){
+      const project = document.getElementById('f1').value.trim();
+      if(!project){ toast('请填写关联项目','error'); return; }
+      const obj = {id:editId||genId(), no:'JS'+now().replace(/-/g,'')+String(list.length+1).padStart(2,'0'),
+        project, amount:document.getElementById('f2').value.trim()||'0元',
+        role:document.getElementById('f3').value, status:document.getElementById('f4').value, date:now()};
+      save(list, obj, key);
+    } else if(type==='partner'){
+      const name = document.getElementById('f1').value.trim();
+      if(!name){ toast('请填写伙伴名称','error'); return; }
+      if(!editId) addReferral(name, 1, '张总（张三）');
+      const obj = {id:editId||genId(), name, level:document.getElementById('f2').value,
+        tags:document.getElementById('f3').value.trim()||'其他', region:document.getElementById('f4').value.trim()||'全国',
+        projects:editId?(list.find(x=>x.id===editId)?.projects||0):0,
+        commission:editId?(list.find(x=>x.id===editId)?.commission||'0元'):'0元'};
+      save(list, obj, key);
+    } else if(type==='member'){
+      const name = document.getElementById('f1').value.trim();
+      if(!name){ toast('请填写成员姓名','error'); return; }
+      const obj = {id:editId||genId(), name, role:document.getElementById('f2').value,
+        phone:document.getElementById('f3').value.trim()||'—', status:'在职', join:now()};
+      save(list, obj, key);
+    }
+  };
+}
+function save(list, obj, key){
+  if(editId){
+    const idx = list.findIndex(x=>x.id===editId);
+    if(idx>-1) list[idx] = obj;
+  } else {
+    list.unshift(obj);
+  }
+  store.set(key, list);
+  closeModal();
+  renderAll();
+  toast('保存成功');
+}
+
+/* ========== 删除 ========== */
+function removeItem(type, id){
+  const key = mapKey(type);
+  const list = store.get(key, []);
+  const nameMap = {coop:'合作',resource:'资源',demand:'需求',project:'项目',customer:'客户',contract:'合同',finance:'结算单',partner:'伙伴',member:'成员'};
+  if(confirm(`确定删除该${nameMap[type]||'记录'}吗？`)){
+    store.set(key, list.filter(x=>x.id!==id));
+    renderAll();
+    toast('已删除');
+  }
+}
+
+/* ========== 状态标签 ========== */
+function statusTag(s){
+  const m = {
+    '已上架':'green','已支付':'green','已完成':'green','已签署':'green','已确认':'green','已转项目':'green','在职':'green',
+    '待审核':'orange','待处理':'orange','招募中':'orange','洽谈中':'orange','进行中':'blue','待签署':'orange','待确认':'orange','审批中':'orange','履约中':'blue',
+    '待启动':'gray','未开始':'gray','已下架':'gray','已失效':'gray','已驳回':'red','已关闭':'gray','已过期':'gray'
+  };
+  return `<span class="tag tag-${m[s]||'gray'}">${esc(s)}</span>`;
+}
+function levelTag(l){
+  const m = {'A级':'red','B级':'blue','C级':'gray','战略合作伙伴':'red','区域合作伙伴':'purple','城市合作伙伴':'blue','认证合作伙伴':'green','普通合作伙伴':'gray'};
+  return `<span class="tag tag-${m[l]||'gray'}">${esc(l)}</span>`;
+}
+
+/* ========== 渲染 ========== */
+function renderAll(){
+  renderDashStats(); renderDashTodos(); renderDashRecs();
+  renderTable('coop'); renderTable('resource'); renderTable('demand');
+  renderProjectStats(); renderTable('project');
+  renderTable('customer'); renderTable('contract');
+  renderFinanceStats(); renderTable('finance');
+  renderTable('partner'); renderDataStats(); renderTable('member'); renderNotifies();
+  renderAdminMembers(); renderAdminAudit(); renderAdminStats();
+  renderInvite(); renderReferrals();
+  updateBadge();
+}
+
+function renderDashStats(){
+  const resources = store.get(KEYS.resources,[]);
+  const demands = store.get(KEYS.demands,[]);
+  const projects = store.get(KEYS.projects,[]);
+  const partners = store.get(KEYS.partners,[]);
+  const finance = store.get(KEYS.finances,[]);
+  const activeProj = projects.filter(p=>p.status==='进行中').length;
+  const totalAmount = finance.reduce((s,f)=> s + (parseFloat(f.amount)||0), 0);
+  document.getElementById('dashStats').innerHTML = `
+    <div class="stat-card"><div class="icon icon-red">🤝</div><div class="label">合作申请</div><div class="value">${store.get(KEYS.coops,[]).length}</div><div class="trend up">↑ 本月 +2</div></div>
+    <div class="stat-card"><div class="icon icon-blue">📦</div><div class="label">有效资源</div><div class="value">${resources.filter(r=>r.status==='已上架').length}</div><div class="trend">共 ${resources.length} 条</div></div>
+    <div class="stat-card"><div class="icon icon-green">📁</div><div class="label">进行中项目</div><div class="value">${activeProj}</div><div class="trend">共 ${projects.length} 个</div></div>
+    <div class="stat-card"><div class="icon icon-orange">💰</div><div class="label">累计结算金额</div><div class="value">${totalAmount.toFixed(1)}万</div><div class="trend up">↑ 本月 +8.5万</div></div>`;
+}
+
+function renderDashTodos(){
+  const todos = store.get(KEYS.todos,[]);
+  document.getElementById('dashTodos').innerHTML = todos.slice(0,5).map(t=>`
+    <li class="todo-item">
+      <div class="todo-dot dot-${t.type}"></div>
+      <div class="todo-info"><div class="tt">${esc(t.text)}</div></div>
+      <div class="todo-time">${esc(t.time)}</div>
+    </li>`).join('') || `<div class="empty"><div class="ei">📭</div><div class="et">暂无待办</div></div>`;
+}
+
+function renderDashRecs(){
+  const recs = [
+    {score:96, title:'TWS耳机东南亚渠道合作', desc:'华强数码 · 消费电子 · 预算30万，匹配3个跨境渠道资源。', reason:'基础匹配95 · 能力匹配98 · 信用匹配92'},
+    {score:92, title:'AI数字化诊断服务', desc:'宏远制造 · 智能制造 · 预算8万，匹配AI服务商能力。', reason:'基础匹配90 · 能力匹配95 · 商务匹配88'},
+    {score:88, title:'园区招商平台共建', desc:'高新产业园区 · 政府项目 · 预算150万，匹配技术方案资源。', reason:'基础匹配88 · 能力匹配90 · 关系匹配86'},
+    {score:85, title:'高校产教融合实训', desc:'南粤职业学院 · 院校 · 人才实训场景。', reason:'基础匹配85 · 能力匹配82 · 商务匹配80'}
+  ];
+  document.getElementById('dashRecs').innerHTML = recs.map(r=>`
+    <div class="rec-item">
+      <div class="rec-score">${r.score}</div>
+      <div class="rec-info">
+        <div class="rt">${esc(r.title)}</div>
+        <div class="rd">${esc(r.desc)}</div>
+        <div class="rr">匹配依据：${esc(r.reason)}</div>
+      </div>
+      <button class="btn btn-sm btn-outline" onclick="switchPage('coop')">查看</button>
+    </div>`).join('');
+}
+
+function renderProjectStats(){
+  const projects = store.get(KEYS.projects,[]);
+  const total = projects.reduce((s,p)=> s + (parseFloat(p.amount)||0), 0);
+  const done = projects.filter(p=>p.status==='已完成').length;
+  const avg = projects.length ? Math.round(projects.reduce((s,p)=>s+p.progress,0)/projects.length) : 0;
+  document.getElementById('projectStats').innerHTML = `
+    <div class="stat-card"><div class="icon icon-red">📁</div><div class="label">全部项目</div><div class="value">${projects.length}</div><div class="trend">进行中 ${projects.filter(p=>p.status==='进行中').length}</div></div>
+    <div class="stat-card"><div class="icon icon-green">✅</div><div class="label">已完成</div><div class="value">${done}</div><div class="trend">验收通过率 100%</div></div>
+    <div class="stat-card"><div class="icon icon-blue">📈</div><div class="label">平均进度</div><div class="value">${avg}%</div><div class="trend">整体推进良好</div></div>
+    <div class="stat-card"><div class="icon icon-orange">💰</div><div class="label">项目总额</div><div class="value">${total.toFixed(0)}万</div><div class="trend">4 个项目</div></div>`;
+}
+
+function renderFinanceStats(){
+  const finance = store.get(KEYS.finances,[]);
+  const total = finance.reduce((s,f)=> s + (parseFloat(f.amount)||0), 0);
+  const confirmed = finance.filter(f=>f.status==='已确认'||f.status==='已支付').length;
+  document.getElementById('financeStats').innerHTML = `
+    <div class="stat-card"><div class="icon icon-red">💰</div><div class="label">结算总额</div><div class="value">${total.toFixed(1)}万</div><div class="trend">${finance.length} 张结算单</div></div>
+    <div class="stat-card"><div class="icon icon-green">✅</div><div class="label">已确认/已支付</div><div class="value">${confirmed}</div><div class="trend">待确认 ${finance.length-confirmed}</div></div>
+    <div class="stat-card"><div class="icon icon-blue">🧾</div><div class="label">待开票</div><div class="value">2</div><div class="trend">开票率 66%</div></div>
+    <div class="stat-card"><div class="icon icon-orange">🏦</div><div class="label">可提现余额</div><div class="value">8.6万</div><div class="trend up">↑ 较上月 +3.2万</div></div>`;
+}
+
+function renderDataStats(){
+  document.getElementById('dataStats').innerHTML = `
+    <div class="stat-card"><div class="icon icon-red">🤝</div><div class="label">合作方总数</div><div class="value">${store.get(KEYS.partners,[]).length}</div><div class="trend up">↑ 认证率 75%</div></div>
+    <div class="stat-card"><div class="icon icon-blue">🎯</div><div class="label">需求匹配覆盖率</div><div class="value">86%</div><div class="trend up">↑ 响应时长 2.1h</div></div>
+    <div class="stat-card"><div class="icon icon-green">👥</div><div class="label">有效客户</div><div class="value">${store.get(KEYS.customers,[]).length}</div><div class="trend up">↑ 转化率 32%</div></div>
+    <div class="stat-card"><div class="icon icon-orange">💰</div><div class="label">项目GMV</div><div class="value">200万</div><div class="trend up">↑ 环比 +18%</div></div>`;
+
+  document.getElementById('funnelChart').innerHTML = funnelChart();
+  document.getElementById('industryChart').innerHTML = industryChart();
+}
+
+function renderAdminMembers(){
+  const list = store.get(KEYS.members, []);
+  const el = document.getElementById('adminMemberTable');
+  if(el) el.innerHTML = list.map(m=>`<tr>
+    <td><strong>${esc(m.name)}</strong></td><td>${esc(m.role)}</td><td>${esc(m.phone)}</td>
+    <td>${statusTag(m.status)}</td><td>${esc(m.join)}</td>
+    <td class="tb-actions"><button class="btn-link" onclick="openModal('member',${m.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('member',${m.id})">移除</button></td>
+  </tr>`).join('') || `<tr><td colspan="6"><div class="empty"><div class="ei">👥</div><div class="et">暂无成员</div></div></td></tr>`;
+}
+function renderAdminAudit(){
+  const finances = store.get(KEYS.finances, []);
+  const list = finances.filter(f=>['待确认','有异议','待支付'].includes(f.status));
+  const el = document.getElementById('auditTable');
+  if(el) el.innerHTML = list.map(f=>`<tr>
+    <td><strong>${esc(f.no)}</strong></td><td>${esc(f.project)}</td><td>${esc(f.amount)}</td>
+    <td>${esc(f.role)}</td><td>${statusTag(f.status)}</td><td>${esc(f.date)}</td>
+    <td class="tb-actions"><button class="btn-link" onclick="auditSettle('${f.id}','approve')">通过</button><button class="btn-link" style="color:#DC2626;" onclick="auditSettle('${f.id}','reject')">驳回</button></td>
+  </tr>`).join('') || `<tr><td colspan="7"><div class="empty"><div class="ei">✅</div><div class="et">暂无待审核结算单</div></div></td></tr>`;
+}
+function auditSettle(id, action){
+  const list = store.get(KEYS.finances, []);
+  const idx = list.findIndex(f=>String(f.id)===String(id));
+  if(idx>-1){
+    list[idx].status = action==='approve' ? '已确认' : '已驳回';
+    store.set(KEYS.finances, list);
+  }
+  toast(action==='approve' ? '已通过该结算单' : '已驳回该结算单');
+  renderAll();
+}
+function renderAdminStats(){
+  const resources = store.get(KEYS.resources,[]);
+  const demands = store.get(KEYS.demands,[]);
+  const projects = store.get(KEYS.projects,[]);
+  const customers = store.get(KEYS.customers,[]);
+  const partners = store.get(KEYS.partners,[]);
+  const finances = store.get(KEYS.finances,[]);
+  const coops = store.get(KEYS.coops,[]);
+  const total = finances.reduce((s,f)=>s+(parseFloat(f.amount)||0),0);
+  const el = document.getElementById('adminStats');
+  if(el) el.innerHTML = `
+    <div class="stat-card"><div class="icon icon-red">🤝</div><div class="label">合作总数</div><div class="value">${coops.length}</div><div class="trend up">活跃 ${coops.filter(c=>c.status==='待处理'||c.status==='洽谈中').length}</div></div>
+    <div class="stat-card"><div class="icon icon-blue">👥</div><div class="label">合作伙伴</div><div class="value">${partners.length}</div><div class="trend">认证率 75%</div></div>
+    <div class="stat-card"><div class="icon icon-green">📁</div><div class="label">在途项目</div><div class="value">${projects.length}</div><div class="trend">客户 ${customers.length} 家</div></div>
+    <div class="stat-card"><div class="icon icon-orange">💰</div><div class="label">结算总额</div><div class="value">${total.toFixed(1)}万</div><div class="trend up">需求 ${demands.length} 条</div></div>`;
+  const funnel = document.getElementById('adminFunnel');
+  if(funnel) funnel.innerHTML = funnelChart();
+  const trend = document.getElementById('adminTrend');
+  if(trend) trend.innerHTML = trendChart();
+}
+function trendChart(){
+  const bars = [
+    {m:'3月', v:40},{m:'4月', v:55},{m:'5月', v:48},{m:'6月', v:62},{m:'7月', v:70},{m:'8月', v:85}
+  ];
+  return `<div style="display:flex;align-items:flex-end;gap:14px;height:180px;padding-top:10px;">
+    ${bars.map(b=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <div style="width:100%;max-width:42px;height:${b.v*1.6}px;background:linear-gradient(180deg,var(--red),#E23D56);border-radius:6px 6px 2px 2px;"></div>
+      <div style="font-size:12px;color:var(--text-mute);">${b.m}</div>
+    </div>`).join('')}
+  </div>`;
+}
+function funnelChart(){
+  const steps = [
+    {label:'线索进入', val:100, w:'100%', c:'#C41E3A'},
+    {label:'有效客户', val:68, w:'68%', c:'#E23D56'},
+    {label:'需求/商机', val:45, w:'45%', c:'#EA8C1E'},
+    {label:'立项', val:32, w:'32%', c:'#2563EB'},
+    {label:'成交', val:18, w:'18%', c:'#16A34A'}
+  ];
+  return steps.map(s=>`
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-sub);margin-bottom:5px;">
+        <span>${s.label}</span><span style="color:${s.c};font-weight:600;">${s.val}%</span>
+      </div>
+      <div style="height:18px;background:#F5F5F5;border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:${s.w};background:${s.c};border-radius:4px;transition:width .5s;"></div>
+      </div>
+    </div>`).join('');
+}
+
+function industryChart(){
+  const items = [
+    {label:'消费电子', v:35, c:'#C41E3A'},{label:'智能制造', v:25, c:'#E23D56'},
+    {label:'政府/园区', v:20, c:'#EA8C1E'},{label:'院校教育', v:12, c:'#2563EB'},{label:'跨境贸易', v:8, c:'#7C3AED'}
+  ];
+  return `<div style="display:flex;flex-direction:column;gap:12px;">` +
+    items.map(i=>`
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--text-sub);margin-bottom:5px;">
+          <span>${i.label}</span><span style="color:${i.c};font-weight:600;">${i.v}%</span>
+        </div>
+        <div style="height:12px;background:#F5F5F5;border-radius:4px;overflow:hidden;">
+          <div style="height:100%;width:${i.v}%;background:${i.c};border-radius:4px;"></div>
+        </div>
+      </div>`).join('') + `</div>`;
+}
+
+function renderNotifies(){
+  const list = store.get(KEYS.notifies,[]);
+  document.getElementById('notifyList').innerHTML = list.map(t=>`
+    <li class="todo-item">
+      <div class="todo-dot dot-${t.type}"></div>
+      <div class="todo-info"><div class="tt">${esc(t.text)}</div></div>
+      <div class="todo-time">${esc(t.time)}</div>
+    </li>`).join('') || `<div class="empty"><div class="ei">🔕</div><div class="et">暂无通知</div></div>`;
+}
+
+function updateBadge(){
+  const coops = store.get(KEYS.coops,[]);
+  const n = coops.filter(c=>c.status==='待处理').length;
+  const badge = document.getElementById('badge-coop');
+  if(n>0){ badge.style.display=''; badge.textContent = n; } else { badge.style.display='none'; }
+}
+
+function renderTable(type){
+  const key = mapKey(type);
+  const list = store.get(key, []);
+  let html = '';
+  const id = type+'Table';
+  if(type==='coop'){
+    html = list.map(c=>`<tr>
+      <td><strong>${esc(c.topic)}</strong></td><td>${esc(c.type)}</td><td>${esc(c.from)}</td><td>${esc(c.to)}</td>
+      <td>${statusTag(c.status)}</td><td>${esc(c.expire)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('coop',${c.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('coop',${c.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='resource'){
+    html = list.map(r=>`<tr>
+      <td><strong>${esc(r.name)}</strong></td><td>${esc(r.type)}</td><td>${esc(r.region)}</td><td>${esc(r.visibility)}</td>
+      <td>${statusTag(r.status)}</td><td>${esc(r.time)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('resource',${r.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('resource',${r.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='demand'){
+    html = list.map(d=>`<tr>
+      <td><strong>${esc(d.title)}</strong></td><td>${esc(d.scene)}</td><td>${esc(d.budget)}</td><td>${esc(d.region)}</td>
+      <td>${statusTag(d.status)}</td><td>${esc(d.deadline)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('demand',${d.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('demand',${d.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='project'){
+    html = list.map(p=>`<tr>
+      <td><strong>${esc(p.name)}</strong></td><td>${esc(p.customer)}</td><td>${esc(p.owner)}</td><td>${esc(p.amount)}</td>
+      <td style="min-width:110px;"><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:6px;background:#F5F5F5;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${p.progress}%;background:${p.progress>=100?'#16A34A':'#C41E3A'};border-radius:3px;"></div></div><span style="font-size:12px;color:var(--text-sub);">${p.progress}%</span></div></td>
+      <td>${statusTag(p.status)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('project',${p.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('project',${p.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='customer'){
+    html = list.map(c=>`<tr>
+      <td><strong>${esc(c.name)}</strong></td><td>${esc(c.industry)}</td><td>${esc(c.contact)}</td><td>${esc(c.phone)}</td>
+      <td>${esc(c.source)}</td><td>${levelTag(c.level)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('customer',${c.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('customer',${c.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='contract'){
+    html = list.map(c=>`<tr>
+      <td><strong>${esc(c.name)}</strong></td><td>${esc(c.type)}</td><td>${esc(c.party)}</td><td>${esc(c.amount)}</td>
+      <td>${statusTag(c.sign)}</td><td>${statusTag(c.perform)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('contract',${c.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('contract',${c.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='finance'){
+    html = list.map(f=>`<tr>
+      <td><strong>${esc(f.no)}</strong></td><td>${esc(f.project)}</td><td>${esc(f.amount)}</td><td>${esc(f.role)}</td>
+      <td>${statusTag(f.status)}</td><td>${esc(f.date)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('finance',${f.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('finance',${f.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='partner'){
+    html = list.map(p=>`<tr>
+      <td><strong>${esc(p.name)}</strong></td><td>${levelTag(p.level)}</td><td>${esc(p.tags)}</td><td>${esc(p.region)}</td>
+      <td>${p.projects} 个</td><td>${esc(p.commission)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('partner',${p.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('partner',${p.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='member'){
+    html = list.map(m=>`<tr>
+      <td><strong>${esc(m.name)}</strong></td><td>${esc(m.role)}</td><td>${esc(m.phone)}</td>
+      <td>${statusTag(m.status)}</td><td>${esc(m.join)}</td>
+      <td class="tb-actions"><button class="btn-link" style="color:#DC2626;" onclick="removeItem('member',${m.id})">移除</button></td>
+    </tr>`).join('');
+  }
+  const el = document.getElementById(id);
+  if(el) el.innerHTML = html || `<tr><td colspan="8"><div class="empty"><div class="ei">📭</div><div class="et">暂无数据，点击右上角按钮创建</div></div></td></tr>`;
+}
+
+/* ========== 内推邀请机制 ========== */
+/* 从父窗口获取当前登录用户（合作端作为 iframe 运行） */
+function getMyUser(){
+  try{
+    if(window.parent && window.parent.sessionStorage){
+      const s = window.parent.sessionStorage.getItem('dcai_session');
+      if(s) return JSON.parse(s);
+    }
+  }catch(e){}
+  try{
+    const u = localStorage.getItem('dcai_user');
+    if(u) return JSON.parse(u);
+  }catch(e){}
+  return null;
+}
+function getMyToken(){
+  try{
+    if(window.parent && window.parent.localStorage) return window.parent.localStorage.getItem('dc_token') || '';
+  }catch(e){}
+  return '';
+}
+function myInviteCode(){
+  const me = getMyUser();
+  if(me && me.username) return me.username;
+  return store.get(KEYS.inviteCode, 'SZ000000');
+}
+function buildInviteLink(){
+  const code = myInviteCode();
+  return location.origin + '/?invite=' + encodeURIComponent(code);
+}
+function buildOpcInviteLink(){
+  const code = myInviteCode();
+  return location.origin + '/?invite=' + encodeURIComponent(code) + '&app=opc';
+}
+function drawQRPlaceholder(canvas, code){
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(0, 0, size, size);
+  ctx.fillStyle = '#1A1A1A';
+  const n = 13;
+  const cell = Math.floor(size / (n + 2));
+  const off = Math.floor((size - cell * n) / 2);
+  let s = 7;
+  for(let i = 0; i < code.length; i++){ s = (s * 131 + code.charCodeAt(i)) >>> 0; }
+  const rand = () => { s = (s * 1103515245 + 12345) >>> 0; return (s >> 16) & 1; };
+  const mid = Math.floor(n / 2);
+  for(let r = 0; r < n; r++){
+    for(let c = 0; c < n; c++){
+      const inFinder = (r < 3 && c < 3) || (r < 3 && c >= n - 3) || (r >= n - 3 && c < 3);
+      const inCenter = r >= mid - 1 && r <= mid + 1 && c >= mid - 1 && c <= mid + 1;
+      if(inCenter) continue;
+      if(inFinder){
+        const lr = (r < 3 && c < 3) ? r : (r < 3 ? r : r - (n - 3));
+        const lc = (r < 3 && c < 3) ? c : (c < 3 ? c : c - (n - 3));
+        const dark = (lr === 0 || lr === 2 || lc === 0 || lc === 2) || (lr === 1 && lc === 1);
+        if(dark) ctx.fillRect(off + c * cell, off + r * cell, cell, cell);
+      } else if(rand()){
+        ctx.fillRect(off + c * cell, off + r * cell, cell, cell);
+      }
+    }
+  }
+  ctx.fillStyle = '#FFFFFF';
+  ctx.fillRect(off + (mid - 1) * cell, off + (mid - 1) * cell, cell * 3, cell * 3);
+  ctx.fillStyle = '#C41E3A';
+  ctx.font = 'bold ' + Math.max(10, Math.floor(size / 7)) + 'px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(code, size / 2, size / 2);
+}
+function renderInvite(){
+  const code = myInviteCode();
+  const link = buildInviteLink();
+  const codeEl = document.getElementById('inviteCodeText');
+  if(codeEl) codeEl.textContent = code;
+  const linkEl = document.getElementById('inviteLink');
+  if(linkEl) linkEl.value = link;
+  const box = document.getElementById('qrcodeBox');
+  if(box){
+    let cv = box.querySelector('canvas');
+    if(!cv){
+      cv = document.createElement('canvas');
+      cv.width = 128; cv.height = 128;
+      cv.style.width = '128px'; cv.style.height = '128px';
+      box.appendChild(cv);
+    }
+    drawQRPlaceholder(cv, code);
+  }
+const opcCode = myInviteCode();
+  const opcLink = buildOpcInviteLink();
+  const opcCodeEl = document.getElementById('opcInviteCodeText');
+  if(opcCodeEl) opcCodeEl.textContent = opcCode;
+  const opcLinkEl = document.getElementById('opcInviteLink');
+  if(opcLinkEl) opcLinkEl.value = opcLink;
+  const opcBox = document.getElementById('qrcodeBoxOpc');
+  if(opcBox){
+    let ocv = opcBox.querySelector('canvas');
+    if(!ocv){
+      ocv = document.createElement('canvas');
+      ocv.width = 128; ocv.height = 128;
+      ocv.style.width = '128px'; ocv.style.height = '128px';
+      opcBox.appendChild(ocv);
+    }
+    drawQRPlaceholder(ocv, opcCode);
+  }
+}
+function renderInviteModal(){
+  const code = myInviteCode();
+  const link = buildInviteLink();
+  const codeEl = document.getElementById('modalInviteCode');
+  if(codeEl) codeEl.textContent = code;
+  const linkEl = document.getElementById('modalInviteLink');
+  if(linkEl) linkEl.value = link;
+  drawQRPlaceholder(document.getElementById('modalQrBox'), code);
+}
+function copyInviteLink(){
+  const link = (document.getElementById('inviteLink') && document.getElementById('inviteLink').value) || buildInviteLink();
+  const done = () => toast('推广链接已复制');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(done).catch(() => { fallbackCopy(link); done(); });
+  } else {
+    fallbackCopy(link); done();
+  }
+}
+function copyOpcInviteLink(){
+  const link = (document.getElementById('opcInviteLink') && document.getElementById('opcInviteLink').value) || buildOpcInviteLink();
+  const done = () => toast('OPC 邀请链接已复制');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(link).then(done).catch(() => { fallbackCopy(link); done(); });
+  } else {
+    fallbackCopy(link); done();
+  }
+}
+function fallbackCopy(text){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+function renderReferrals(){
+  const el = document.getElementById('referralTable');
+  const el1 = document.getElementById('statLevel1');
+  const el2 = document.getElementById('statLevel2');
+  const elT = document.getElementById('statTotal');
+  const elC = document.getElementById('statCommission');
+  const token = getMyToken();
+  fetch('/api/referrals', { headers: { 'x-auth-token': token } })
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      if(!res || !res.ok){ if(el) el.innerHTML = '<tr><td colspan="4"><div class="empty"><div class="ei">⚠️</div><div class="et">获取推广数据失败</div></div></td></tr>'; return; }
+      const list = Array.isArray(res.list) ? res.list : [];
+      const l2 = Array.isArray(res.level2) ? res.level2 : [];
+      const stats = res.stats || {};
+      if(el1) el1.textContent = stats.level1 !== undefined ? stats.level1 : list.length;
+      if(el2) el2.textContent = stats.level2 !== undefined ? stats.level2 : l2.length;
+      if(elT) elT.textContent = stats.total !== undefined ? stats.total : (list.length + l2.length);
+      if(elC) elC.textContent = '¥' + ((stats.estimatedCommission || 0)).toLocaleString();
+      if(!el) return;
+      /* 合并一级和二级下级，一级在前 */
+      const all = list.map(function(x){ return Object.assign({}, x, {_level:'一级下级', _levelClass:'tag-red'}); })
+        .concat(l2.map(function(x){ return Object.assign({}, x, {_level:'二级下级', _levelClass:'tag-blue'}); }));
+      el.innerHTML = all.map(function(x){
+        const d = x.createdAt ? new Date(x.createdAt) : null;
+        const ds = d ? (d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')) : '—';
+        return '<tr><td><strong>'+esc(x.nick || x.username)+'</strong>'+(x.phone?'<div style="font-size:11px;color:var(--text-mute);">'+esc(x.phone)+'</div>':'')+'</td>' +
+          '<td><span class="tag '+x._levelClass+'">'+x._level+'</span></td>' +
+          '<td>'+esc(x.inviter || myInviteCode())+'</td>' +
+          '<td>'+ds+'</td></tr>';
+      }).join('') || '<tr><td colspan="4"><div class="empty"><div class="ei">🌱</div><div class="et">暂无下级，分享您的推广链接邀请伙伴加入吧</div></div></td></tr>';
+    })
+    .catch(function(){
+      if(el) el.innerHTML = '<tr><td colspan="4"><div class="empty"><div class="ei">🔌</div><div class="et">未连接服务器，无法获取推广数据</div></div></td></tr>';
+    });
+}
+function addReferral(name, level, inviter){
+  if(!name) return;
+  const list = store.get(KEYS.referrals, []);
+  if(list.some(x => x.name === name)) return;
+  list.unshift({id: genId(), name, level, inviter: inviter || '张总（张三）', join: now()});
+  store.set(KEYS.referrals, list);
+}
+function handleInviteUrl(){
+  const qs = new URLSearchParams(location.search);
+  const invite = qs.get('invite');
+  if(invite){
+    const mine = myInviteCode();
+    if(invite === mine){ toast('您已通过自己的推广链接进入'); }
+    else { toast('您已通过邀请码 ' + invite + ' 的推广链接进入'); }
+  }
+}
+
+/* ========== AI 交互 ========== */
+function aiReply(text){
+  const q = text || document.getElementById('aiInput').value.trim();
+  if(!q && !text){ toast('请输入你的合作需求','error'); return; }
+  if(!text) document.getElementById('aiInput').value = '';
+  const logs = store.get(KEYS.aiLogs, []);
+  const replies = [
+    '已理解您的需求，AI 正在分析。基于您的描述，为您匹配到 3 条高相关资源，建议优先对接李总的跨境渠道资源（匹配度 96%）。',
+    '企业诊断结果：贵司在营销与供应链环节存在数字化提升空间。建议采用"AI 诊断 + 渠道拓展"组合方案，预计周期 6-8 周。',
+    '已生成合作方案草案：组合服务商、OPC、渠道资源，分 3 个里程碑推进，预算建议控制在 30 万内，关键指标为转化率与回款。',
+    '本周经营报告：新增合作申请 2 条、项目推进 3 个、结算金额 8.5 万。风险提示：1 项合同即将到期，建议尽快跟进。'
+  ];
+  const reply = replies[Math.floor(Math.random()*replies.length)];
+  logs.unshift({q: q, a: reply, time: '刚刚'});
+  store.set(KEYS.aiLogs, logs);
+  toast('AI 已回复');
+  renderAiLogs();
+}
+function aiAsk(text){ aiReply(text); }
+function aiAsk2(text){
+  const q = text || document.getElementById('aiInput2').value.trim();
+  if(!q && !text){ toast('请输入你的需求','error'); return; }
+  if(!text) document.getElementById('aiInput2').value = '';
+  aiReply(q);
+}
+function renderAiLogs(){
+  const logs = store.get(KEYS.aiLogs, []);
+  const el = document.getElementById('aiChatLog');
+  el.innerHTML = logs.map(l=>`
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:6px;"><div style="background:var(--red);color:#fff;padding:8px 12px;border-radius:10px 10px 2px 10px;max-width:85%;font-size:13px;">${esc(l.q)}</div></div>
+      <div style="display:flex;justify-content:flex-start;"><div style="background:#F5F5F5;padding:10px 12px;border-radius:10px 10px 10px 2px;max-width:85%;font-size:13px;color:var(--text-main);line-height:1.6;">🤖 ${esc(l.a)}</div></div>
+      <div style="text-align:center;font-size:11px;color:var(--text-mute);margin-top:4px;">${esc(l.time)}</div>
+    </div>`).join('') || `<div class="empty"><div class="ei">🤖</div><div class="et">暂无对话记录</div><div class="ed">尝试向 AI 助手提问吧</div></div>`;
+}
+
+/* ========== 全局搜索 ========== */
+function globalSearch(){
+  const q = document.getElementById('globalSearch').value.trim();
+  if(!q){ toast('请输入搜索关键词','error'); return; }
+  const resources = store.get(KEYS.resources,[]).filter(r=>r.name.includes(q));
+  const demands = store.get(KEYS.demands,[]).filter(d=>d.title.includes(q));
+  const projects = store.get(KEYS.projects,[]).filter(p=>p.name.includes(q)||p.customer.includes(q));
+  const customers = store.get(KEYS.customers,[]).filter(c=>c.name.includes(q));
+  const n = resources.length + demands.length + projects.length + customers.length;
+  if(n===0){ toast('未找到匹配结果','error'); return; }
+  let html = '';
+  if(resources.length) html += resources.map(r=>`<div class="rec-item"><div class="rec-info"><div class="rt">📦 资源 · ${esc(r.name)}</div><div class="rd">${esc(r.type)} · ${esc(r.region)}</div></div></div>`).join('');
+  if(demands.length) html += demands.map(d=>`<div class="rec-item"><div class="rec-info"><div class="rt">🎯 需求 · ${esc(d.title)}</div><div class="rd">${esc(d.scene)} · ${esc(d.budget)}</div></div></div>`).join('');
+  if(projects.length) html += projects.map(p=>`<div class="rec-item"><div class="rec-info"><div class="rt">📁 项目 · ${esc(p.name)}</div><div class="rd">${esc(p.customer)} · ${esc(p.status)}</div></div></div>`).join('');
+  if(customers.length) html += customers.map(c=>`<div class="rec-item"><div class="rec-info"><div class="rt">👥 客户 · ${esc(c.name)}</div><div class="rd">${esc(c.industry)} · ${esc(c.contact)}</div></div></div>`).join('');
+  openResultModal(`搜索结果（${n} 条）`, html);
+}
+function openResultModal(title, body){
+  modalMode = 'search';
+  document.getElementById('modalBox').classList.add('wide');
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalFoot').style.display = 'none';
+  document.getElementById('modalMask').classList.add('open');
+  currentSubmit = null;
+}
+/* 恢复模态框底部 */
+function restoreModalFoot(){ document.getElementById('modalFoot').style.display = ''; }
+function closeModal(){
+  document.getElementById('modalMask').classList.remove('open');
+  restoreModalFoot();
+  modalMode = null; editId = null; currentSubmit = null;
+}
+
+/* ========== 初始化 ========== */
+seed();
+applyRole();
+handleInviteUrl();
+renderAll();
+renderAiLogs();
+</script>
+
+<script>
+/* ============================================================
+ * 合作端（数字中国合作伙伴）升级层：P0/P1/P2 全部落地
+ * 真实RBAC / 登录登出UI / 权限门控 / 搜索增强 / 待办可点 /
+ * 邀请链接修复 / 通知中心 / 需求报名 / 成员角色分配 / 数据过滤 /
+ * 权益升级 / AI清空导出 / 演示数据重置
+ * ============================================================ */
+if (!window.__coopUpgraded) {
+window.__coopUpgraded = true;
+
+/* ---------- 工具 ---------- */
+function upC$(s){ return document.querySelector(s); }
+function upCAll(s){ return document.querySelectorAll(s); }
+function upToast(msg, type){ try{ toast(msg, type); }catch(e){} }
+function upNotifyReadKey(){ return 'up_notify_read'; }
+function upNotifyUnread(){
+  try{
+    var list = store.get(KEYS.notifies, []);
+    var read = store.get(upNotifyReadKey(), []);
+    return list.filter(function(n){ return read.indexOf(n.id) < 0; }).length;
+  }catch(e){ return 0; }
+}
+function upMarkNotifiesRead(){
+  try{
+    var list = store.get(KEYS.notifies, []);
+    var read = list.map(function(n){ return n.id; });
+    store.set(upNotifyReadKey(), read);
+  }catch(e){}
+}
+function upRenderNotifyBadge(){
+  var b = document.getElementById('upNotifyBadge');
+  if(!b) return;
+  var n = upNotifyUnread();
+  b.textContent = n > 9 ? '9+' : n;
+  b.style.display = n > 0 ? '' : 'none';
+}
+
+/* ---------- P0: 真实认证 ---------- */
+function getAuth(){
+  var a = null;
+  try{ a = store.get(AUTH_KEY, null); }catch(e){}
+  if(!a){ a = {role:'admin', name:'管理员', title:'平台管理者'}; }
+  return a;
+}
+function upEnsureAuthUI(){
+  if(document.getElementById('upAuth')) return;
+  var right = upC$('.topbar-right');
+  if(!right) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'upAuth';
+  wrap.className = 'up-auth';
+  wrap.style.cssText = 'display:flex;align-items:center;gap:8px;';
+  wrap.innerHTML =
+    '<div class="up-avatar" id="upAvatar" style="display:flex;align-items:center;gap:8px;padding:4px 10px;background:#fff;border:1px solid var(--border);border-radius:10px;cursor:default;">' +
+      '<span class="up-avatar-mark" id="avatarMark" style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#E23D56);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">管</span>' +
+      '<div class="up-avatar-txt" style="line-height:1.25;text-align:left;">' +
+        '<div id="avatarName" style="font-size:12.5px;font-weight:600;color:var(--text-main);">管理员</div>' +
+        '<div id="avatarRole" style="font-size:10.5px;color:var(--text-sub);">平台管理者</div>' +
+      '</div>' +
+    '</div>' +
+    '<button class="btn btn-sm btn-outline" id="loginBtn" style="display:none" onclick="openLogin()">🔑 管理者登录</button>' +
+    '<button class="btn btn-sm btn-outline" id="logoutBtn" onclick="logout()">↪ 退出登录</button>';
+  right.insertBefore(wrap, right.firstChild);
+}
+function applyRole(){
+  upEnsureAuthUI();
+  const a = getAuth();
+  const isAdmin = a.role === 'admin';
+  document.querySelectorAll('.admin-only').forEach(el=>{ el.style.display = isAdmin ? '' : 'none'; });
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  if(loginBtn) loginBtn.style.display = isAdmin ? 'none' : '';
+  if(logoutBtn) logoutBtn.style.display = isAdmin ? '' : 'none';
+  const am = document.getElementById('avatarMark');
+  const an = document.getElementById('avatarName');
+  const ar = document.getElementById('avatarRole');
+  if(am) am.textContent = isAdmin ? '管' : '张';
+  if(an) an.textContent = isAdmin ? '管理员' : '张总';
+  if(ar) ar.textContent = isAdmin ? '平台管理者' : '战略合作伙伴';
+  const h1 = document.querySelector('#page-dashboard .page-head h1');
+  if(h1) h1.textContent = isAdmin ? '管理员，欢迎回来' : '早上好，张总';
+  const active = document.querySelector('.page.active');
+  if(active && adminPages.includes(active.id.replace('page-','')) && !isAdmin){
+    switchPage('dashboard');
+  }
+}
+
+/* ---------- P1: 通知中心（铃铛） ---------- */
+function upEnsureNotify(){
+  var bell = upC$('.icon-btn[title="消息通知"]');
+  if(!bell) return;
+  if(bell._upBound) return;
+  bell._upBound = true;
+  bell.style.position = 'relative';
+  bell.innerHTML = '🔔<span class="up-notify-badge" id="upNotifyBadge" style="position:absolute;top:-5px;right:-5px;min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:10px;display:none;align-items:center;justify-content:center;padding:0 3px;"></span>';
+  bell.onclick = function(){ upToggleNotify(); };
+  // panel
+  if(document.getElementById('upNotifyPanel')) return;
+  var panel = document.createElement('div');
+  panel.id = 'upNotifyPanel';
+  panel.className = 'up-notify-panel';
+  panel.style.cssText = 'position:absolute;top:calc(100% + 8px);right:0;width:320px;max-width:92vw;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.16);z-index:1200;display:none;overflow:hidden;';
+  panel.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);background:#FDF5F6;">' +
+      '<span style="font-weight:700;font-size:13.5px;color:var(--text-main);">🔔 消息通知</span>' +
+      '<button class="btn-link" onclick="upNotifyMarkAll()">全部已读</button>' +
+    '</div>' +
+    '<div id="upNotifyBody" style="max-height:320px;overflow-y:auto;"></div>' +
+    '<div onclick="upNotifyGoto()" style="padding:10px;text-align:center;font-size:12.5px;color:var(--red);cursor:pointer;border-top:1px solid var(--border);background:#fff;">查看全部 → 账户中心</div>';
+  document.body.appendChild(panel);
+  upRenderNotifyBody();
+  upRenderNotifyBadge();
+  // close on outside click
+  document.addEventListener('click', function(e){
+    var p = document.getElementById('upNotifyPanel');
+    if(p && p.style.display !== 'none' && !e.target.closest('#upNotifyPanel') && !e.target.closest('.icon-btn[title="消息通知"]')){
+      p.style.display = 'none';
+    }
+  });
+}
+function upToggleNotify(){
+  var p = document.getElementById('upNotifyPanel');
+  if(!p) return;
+  if(p.style.display === 'none' || !p.style.display){
+    upRenderNotifyBody();
+    p.style.display = 'block';
+    upMarkNotifiesRead();
+    upRenderNotifyBadge();
+  } else {
+    p.style.display = 'none';
+  }
+}
+function upRenderNotifyBody(){
+  var body = document.getElementById('upNotifyBody');
+  if(!body) return;
+  var list = [];
+  try{ list = store.get(KEYS.notifies, []); }catch(e){}
+  if(!list.length){ body.innerHTML = '<div style="padding:30px;text-align:center;font-size:12.5px;color:var(--text-mute);">暂无通知</div>'; return; }
+  body.innerHTML = list.map(function(n){
+    var page = upTodoPage(n.text || '');
+    return '<div class="up-notify-item" style="display:flex;align-items:flex-start;gap:8px;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;font-size:12.5px;" onclick="upNotifyGo(\''+page+'\')">' +
+      '<span class="todo-dot dot-'+(n.type||'blue')+'" style="margin-top:3px;flex:none;"></span>' +
+      '<div style="flex:1;min-width:0;"><div style="line-height:1.5;color:var(--text-main);">'+esc(n.text)+'</div><div style="font-size:10.5px;color:var(--text-mute);margin-top:3px;">'+esc(n.time)+'</div></div>' +
+    '</div>';
+  }).join('');
+}
+function upNotifyMarkAll(){ upMarkNotifiesRead(); upRenderNotifyBadge(); upRenderNotifyBody(); upToast('已全部标记为已读'); }
+function upNotifyGo(page){ document.getElementById('upNotifyPanel').style.display='none'; switchPage(page); upToast('已跳转至 '+pageNames[page]); }
+function upNotifyGoto(){ document.getElementById('upNotifyPanel').style.display='none'; switchPage('account'); }
+
+/* ---------- P1: 待办可点击 ---------- */
+function upTodoPage(text){
+  if(/合作申请|合作/.test(text)) return 'coop';
+  if(/里程碑|项目/.test(text)) return 'project';
+  if(/合同/.test(text)) return 'contract';
+  if(/资源|审核/.test(text)) return 'resource';
+  if(/结算单|结算/.test(text)) return 'finance';
+  if(/需求/.test(text)) return 'demand';
+  if(/客户/.test(text)) return 'customer';
+  if(/合同/.test(text)) return 'contract';
+  return 'dashboard';
+}
+function upTodoGo(page){
+  switchPage(page);
+  upToast('已跳转至 '+pageNames[page]);
+}
+function renderDashTodos(){
+  const todos = store.get(KEYS.todos,[]);
+  document.getElementById('dashTodos').innerHTML = todos.slice(0,5).map(t=>`
+    <li class="todo-item" style="cursor:pointer;" onclick="upTodoGo('${upTodoPage(t.text)}')" title="点击跳转处理">
+      <div class="todo-dot dot-${t.type}"></div>
+      <div class="todo-info"><div class="tt">${esc(t.text)}</div></div>
+      <div class="todo-time">${esc(t.time)}</div>
+    </li>`).join('') || `<div class="empty"><div class="ei">📭</div><div class="et">暂无待办</div></div>`;
+}
+
+/* ---------- P1: 邀请链接修复 ---------- */
+function upInviteBase(){
+  return location.origin;
+}
+function buildInviteLink(){
+  const code = myInviteCode();
+  return upInviteBase() + '/?invite=' + encodeURIComponent(code);
+}
+function buildOpcInviteLink(){
+  const code = myInviteCode();
+  return upInviteBase() + '/?invite=' + encodeURIComponent(code) + '&app=opc';
+}
+
+/* ---------- P1: 搜索增强（多实体 + 可点击跳转） ---------- */
+function globalSearch(){
+  const q = document.getElementById('globalSearch').value.trim();
+  if(!q){ upToast('请输入搜索关键词','error'); return; }
+  var hits = [];
+  function add(page, label, sub){ hits.push({page:page, label:label, sub:sub}); }
+  try{
+    store.get(KEYS.resources,[]).forEach(function(r){ if((r.name||'').indexOf(q)>=0) add('resource','📦 资源 · '+r.name, r.type+' · '+r.region); });
+    store.get(KEYS.demands,[]).forEach(function(d){ if((d.title||'').indexOf(q)>=0) add('demand','🎯 需求 · '+d.title, d.scene+' · '+d.budget); });
+    store.get(KEYS.projects,[]).forEach(function(p){ if((p.name||'').indexOf(q)>=0||(p.customer||'').indexOf(q)>=0) add('project','📁 项目 · '+p.name, p.customer+' · '+p.status); });
+    store.get(KEYS.customers,[]).forEach(function(c){ if((c.name||'').indexOf(q)>=0) add('customer','👥 客户 · '+c.name, c.industry+' · '+c.contact); });
+    store.get(KEYS.coops,[]).forEach(function(c){ if((c.topic||'').indexOf(q)>=0) add('coop','🤝 合作 · '+c.topic, c.type+' · '+c.status); });
+    store.get(KEYS.contracts,[]).forEach(function(c){ if((c.name||'').indexOf(q)>=0||(c.party||'').indexOf(q)>=0) add('contract','📄 合同 · '+c.name, c.type+' · '+c.amount); });
+    store.get(KEYS.finances,[]).forEach(function(f){ if((f.project||'').indexOf(q)>=0||(f.no||'').indexOf(q)>=0) add('finance','💰 结算单 · '+f.no, f.project+' · '+f.status); });
+    store.get(KEYS.partners,[]).forEach(function(p){ if((p.name||'').indexOf(q)>=0) add('partner','🔗 伙伴 · '+p.name, p.level+' · '+p.commission); });
+    store.get(KEYS.members,[]).forEach(function(m){ if((m.name||'').indexOf(q)>=0) add('members','👥 成员 · '+m.name, m.role+' · '+m.phone); });
+  }catch(e){}
+  if(!hits.length){ upToast('未找到匹配结果','error'); return; }
+  var html = hits.map(function(h){
+    return '<div class="rec-item" style="cursor:pointer;" onclick="upSearchGo(\''+h.page+'\')" title="点击跳转">' +
+      '<div class="rec-info"><div class="rt">'+esc(h.label)+'</div><div class="rd">'+esc(h.sub)+'</div></div>' +
+      '<button class="btn btn-sm btn-outline">前往 ›</button></div>';
+  }).join('');
+  openResultModal('搜索结果（'+hits.length+' 条）· 点击条目跳转', html);
+}
+function upSearchGo(page){
+  try{ closeModal(); }catch(e){}
+  switchPage(page);
+  upToast('已跳转至 '+pageNames[page]);
+}
+
+/* ---------- P2: 需求报名 / 接单 ---------- */
+function upDemandApply(id){
+  try{
+    var list = store.get(KEYS.demands, []);
+    var d = list.find(function(x){ return x.id === id; });
+    if(!d){ return; }
+    d.status = '洽谈中';
+    store.set(KEYS.demands, list);
+    var coops = store.get(KEYS.coops, []);
+    coops.unshift({id: genId(), topic:'报名需求：'+d.title, type:'资源合作', from:'张总', to:'需求方', status:'待处理', expire:'2026-12-31'});
+    store.set(KEYS.coops, coops);
+    upToast('✅ 已报名「'+d.title+'」，已向需求方发起合作意向');
+    renderAll();
+  }catch(e){}
+}
+
+/* ---------- P2: 成员角色分配（角色权限页） ---------- */
+function upEnsureRoleAssign(){
+  if(document.getElementById('upRoleAssignCard')) return;
+  var page = document.getElementById('page-roles');
+  if(!page) return;
+  var card = document.createElement('div');
+  card.id = 'upRoleAssignCard';
+  card.className = 'card card-pad';
+  card.style.marginTop = '16px';
+  page.appendChild(card);
+  upRenderRoleAssign();
+}
+function upRenderRoleAssign(){
+  var card = document.getElementById('upRoleAssignCard');
+  if(!card) return;
+  var list = [];
+  try{ list = store.get(KEYS.members, []); }catch(e){}
+  var roles = ['组织管理员','业务人员','项目人员','财务人员','只读'];
+  card.innerHTML = '<h3 style="font-size:15px;margin-bottom:12px;">成员角色分配</h3>' +
+    '<p style="font-size:12.5px;color:var(--text-sub);margin-bottom:12px;">为组织成员分配角色，角色决定其可见菜单与操作权限。</p>' +
+    (list.length ? '<div class="table-wrap"><table><thead><tr><th>成员</th><th>手机号</th><th>角色</th><th>操作</th></tr></thead><tbody>' +
+      list.map(function(m){
+        return '<tr><td><strong>'+esc(m.name)+'</strong></td><td>'+esc(m.phone)+'</td>' +
+          '<td><select id="upRoleSel_'+m.id+'">'+roles.map(function(r){ return '<option '+(m.role===r?'selected':'')+'>'+r+'</option>'; }).join('')+'</select></td>' +
+          '<td class="tb-actions"><button class="btn-link" onclick="upSaveMemberRole('+m.id+')">保存</button></td></tr>';
+      }).join('') + '</tbody></table></div>'
+    : '<div class="empty"><div class="et">暂无成员</div></div>');
+}
+function upSaveMemberRole(id){
+  try{
+    var list = store.get(KEYS.members, []);
+    var sel = document.getElementById('upRoleSel_'+id);
+    if(!sel) return;
+    var m = list.find(function(x){ return x.id === id; });
+    if(!m) return;
+    m.role = sel.value;
+    store.set(KEYS.members, list);
+    upToast('✅ 已为 '+(m.name||'成员')+' 分配角色：'+sel.value);
+    renderAll(); // refresh tables
+    upRenderRoleAssign();
+  }catch(e){}
+}
+
+/* ---------- P2: 账户权益升级 ---------- */
+function upEnsureUpgrade(){
+  if(document.getElementById('upUpgradeBtn')) return;
+  var page = document.getElementById('page-account');
+  if(!page) return;
+  var levelCard = page.querySelector('.card'); // first card (权益)
+  if(!levelCard) return;
+  var btn = document.createElement('button');
+  btn.id = 'upUpgradeBtn';
+  btn.className = 'btn btn-sm btn-primary';
+  btn.style.marginTop = '10px';
+  btn.textContent = '🚀 申请更高权益等级';
+  btn.onclick = upApplyUpgrade;
+  // append near 当前等级 text
+  var texts = levelCard.querySelectorAll('div');
+  var last = texts[texts.length-1];
+  if(last) last.appendChild(btn);
+  else levelCard.appendChild(btn);
+}
+function upApplyUpgrade(){
+  try{
+    var list = store.get(KEYS.notifies, []);
+    list.unshift({id: genId(), type:'orange', text:'您的权益等级升级申请已提交，管理员将在一个工作日内审核', time:'刚刚'});
+    store.set(KEYS.notifies, list);
+    upRenderNotifyBadge();
+  }catch(e){}
+  upToast('✅ 已提交升级申请，管理员将在一个工作日内审核');
+}
+
+/* ---------- P2: AI 清空 / 导出 ---------- */
+function upEnsureAiToolbar(){
+  if(document.getElementById('upAiToolbar')) return;
+  var cardHead = upC$('#page-ai .card-head');
+  if(!cardHead) return;
+  var more = cardHead.querySelector('.more');
+  if(more) more.innerHTML = '<span style="display:flex;gap:8px;align-items:center;"><button class="btn btn-sm btn-outline" onclick="upAiExport()">📋 复制</button><button class="btn btn-sm btn-outline" style="color:#DC2626;" onclick="upAiClear()">🗑 清空</button></span>';
+}
+function upAiClear(){
+  if(!confirm('确定清空全部 AI 对话记录吗？')) return;
+  try{ store.set(KEYS.aiLogs, []); renderAiLogs(); }catch(e){}
+  upToast('✅ 对话记录已清空');
+}
+function upAiExport(){
+  try{
+    var logs = store.get(KEYS.aiLogs, []);
+    if(!logs.length){ upToast('暂无对话记录可导出','error'); return; }
+    var txt = logs.map(function(l){ return 'Q: '+l.q+'\nA: '+l.a; }).join('\n\n');
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); }catch(e){}
+    document.body.removeChild(ta);
+    upToast('✅ 已复制 '+logs.length+' 条对话记录');
+  }catch(e){}
+}
+
+/* ---------- P2: 数据筛选 + 明细 ---------- */
+function upEnsureDataExtras(){
+  if(document.getElementById('upDataBar')) return;
+  var page = document.getElementById('page-data');
+  if(!page) return;
+  var head = page.querySelector('.page-head');
+  if(!head) return;
+  var bar = document.createElement('div');
+  bar.id = 'upDataBar';
+  bar.style.cssText = 'display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px;';
+  bar.innerHTML =
+    '<span style="font-size:13px;color:var(--text-sub);">统计口径：</span>' +
+    '<button class="btn btn-sm '+(window.__upDataPeriod==='all'?'btn-primary':'btn-outline')+'" data-p="all" onclick="upSetDataPeriod(\'all\')">全部</button>' +
+    '<button class="btn btn-sm '+(window.__upDataPeriod==='month'?'btn-primary':'btn-outline')+'" data-p="month" onclick="upSetDataPeriod(\'month\')">本月</button>' +
+    '<button class="btn btn-sm '+(window.__upDataPeriod==='quarter'?'btn-primary':'btn-outline')+'" data-p="quarter" onclick="upSetDataPeriod(\'quarter\')">本季度</button>' +
+    '<button class="btn btn-sm '+(window.__upDataPeriod==='year'?'btn-primary':'btn-outline')+'" data-p="year" onclick="upSetDataPeriod(\'year\')">本年</button>' +
+    '<span id="upDataHint" style="font-size:12px;color:var(--text-mute);margin-left:auto;"></span>';
+  head.parentElement.insertBefore(bar, page.querySelector('.stat-grid'));
+  // detail card
+  var detail = document.createElement('div');
+  detail.id = 'upDataDetail';
+  detail.className = 'card card-pad';
+  detail.style.marginTop = '16px';
+  page.appendChild(detail);
+}
+function upSetDataPeriod(p){
+  try{ window.__upDataPeriod = p; }catch(e){}
+  upEnsureDataExtras();
+  var btns = upCAll('#upDataBar [data-p]');
+  btns.forEach(function(b){ b.classList.toggle('btn-primary', b.getAttribute('data-p')===p); b.classList.toggle('btn-outline', b.getAttribute('data-p')!==p); });
+  renderAll();
+  upToast('已切换统计口径：' + ({all:'全部', month:'本月', quarter:'本季度', year:'本年'}[p]||p));
+}
+function upDataFactor(){
+  var p = 'all';
+  try{ p = window.__upDataPeriod || 'all'; }catch(e){}
+  var f = {all:1, month:0.32, quarter:0.66, year:1};
+  return {period:p, factor:f[p]||1};
+}
+function renderDataStats(){
+  var df = upDataFactor();
+  var f = df.factor;
+  var coverage = Math.round(86 * (f<1 ? 0.7+f*0.3 : 1));
+  var gmv = (200 * f).toFixed(0);
+  var resp = (2.1 * (f<1 ? 1+f*0.4 : 1)).toFixed(1);
+  var rate = Math.round(32 * (f<1 ? 0.7+f*0.3 : 1));
+  var auth = Math.round(75 * (f<1 ? 0.9+f*0.1 : 1));
+  document.getElementById('dataStats').innerHTML = `
+    <div class="stat-card"><div class="icon icon-red">🤝</div><div class="label">合作方总数</div><div class="value">${Math.max(1,Math.round(store.get(KEYS.partners,[]).length*f))}</div><div class="trend up">↑ 认证率 ${auth}%</div></div>
+    <div class="stat-card"><div class="icon icon-blue">🎯</div><div class="label">需求匹配覆盖率</div><div class="value">${coverage}%</div><div class="trend up">↑ 响应时长 ${resp}h</div></div>
+    <div class="stat-card"><div class="icon icon-green">👥</div><div class="label">有效客户</div><div class="value">${Math.max(1,Math.round(store.get(KEYS.customers,[]).length*f))}</div><div class="trend up">↑ 转化率 ${rate}%</div></div>
+    <div class="stat-card"><div class="icon icon-orange">💰</div><div class="label">项目GMV</div><div class="value">${gmv}万</div><div class="trend up">↑ 环比 +18%</div></div>`;
+  document.getElementById('funnelChart').innerHTML = funnelChart();
+  document.getElementById('industryChart').innerHTML = industryChart();
+  upRenderDataDetail();
+}
+function upRenderDataDetail(){
+  var box = document.getElementById('upDataDetail');
+  if(!box) return;
+  var df = upDataFactor();
+  var period = df.period;
+  var projects = [];
+  var finances = [];
+  try{ projects = store.get(KEYS.projects, []); finances = store.get(KEYS.finances, []); }catch(e){}
+  var title = {all:'全部经营明细', month:'本月经营明细', quarter:'本季度经营明细', year:'本年经营明细'}[period]||'经营明细';
+  var pRows = projects.map(function(p){
+    return '<tr><td><strong>'+esc(p.name)+'</strong></td><td>'+esc(p.customer)+'</td><td>'+esc(p.amount)+'</td><td>'+p.progress+'%</td><td>'+statusTag(p.status)+'</td></tr>';
+  }).join('');
+  var fRows = finances.map(function(fn){
+    return '<tr><td><strong>'+esc(fn.no)+'</strong></td><td>'+esc(fn.project)+'</td><td>'+esc(fn.amount)+'</td><td>'+esc(fn.role)+'</td><td>'+statusTag(fn.status)+'</td></tr>';
+  }).join('');
+  box.innerHTML = '<h3 style="font-size:15px;margin-bottom:12px;">📊 '+title+'</h3>' +
+    '<div class="table-wrap"><table><thead><tr><th>项目 / 结算单</th><th>对象</th><th>金额</th><th>进度 / 角色</th><th>状态</th></tr></thead><tbody>' +
+    (pRows || '<tr><td colspan="5"><div class="empty">暂无项目</div></td></tr>') +
+    (fRows || '') +
+    '</tbody></table></div>';
+}
+
+/* ---------- P2: 演示数据重置 ---------- */
+function upEnsureReset(){
+  if(document.getElementById('upResetDemoBtn')) return;
+  var page = document.getElementById('page-security');
+  if(!page) return;
+  var btn = document.createElement('button');
+  btn.id = 'upResetDemoBtn';
+  btn.className = 'btn btn-sm btn-outline';
+  btn.style.cssText = 'margin-top:16px;color:#DC2626;border-color:#DC2626;';
+  btn.textContent = '♻️ 重置演示数据';
+  btn.onclick = upResetDemo;
+  page.appendChild(btn);
+}
+function upResetDemo(){
+  if(!confirm('确定重置全部演示数据吗？将清空所有改动并恢复初始数据')) return;
+  try{
+    Object.keys(KEYS).forEach(function(k){ try{ localStorage.removeItem(KEYS[k]); }catch(e){} });
+    try{ localStorage.removeItem(upNotifyReadKey()); }catch(e){}
+    seed();
+    renderAll();
+    renderAiLogs();
+    applyRole();
+    upRenderNotifyBadge();
+    upRenderRoleAssign();
+    upToast('✅ 演示数据已重置');
+  }catch(e){}
+}
+
+/* ---------- P2: renderTable 覆盖（需求报名 + 原逻辑） ---------- */
+function renderTable(type){
+  const key = mapKey(type);
+  const list = store.get(key, []);
+  let html = '';
+  const id = type+'Table';
+  if(type==='coop'){
+    html = list.map(c=>`<tr>
+      <td><strong>${esc(c.topic)}</strong></td><td>${esc(c.type)}</td><td>${esc(c.from)}</td><td>${esc(c.to)}</td>
+      <td>${statusTag(c.status)}</td><td>${esc(c.expire)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('coop',${c.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('coop',${c.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='resource'){
+    html = list.map(r=>`<tr>
+      <td><strong>${esc(r.name)}</strong></td><td>${esc(r.type)}</td><td>${esc(r.region)}</td><td>${esc(r.visibility)}</td>
+      <td>${statusTag(r.status)}</td><td>${esc(r.time)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('resource',${r.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('resource',${r.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='demand'){
+    html = list.map(d=>`<tr>
+      <td><strong>${esc(d.title)}</strong></td><td>${esc(d.scene)}</td><td>${esc(d.budget)}</td><td>${esc(d.region)}</td>
+      <td>${statusTag(d.status)}</td><td>${esc(d.deadline)}</td>
+      <td class="tb-actions">${d.status==='招募中' ? `<button class="btn-link" style="color:#16A34A;" onclick="upDemandApply(${d.id})">报名</button>` : `<span class="tag tag-green" style="cursor:default;">已报名</span>`}<button class="btn-link" onclick="openModal('demand',${d.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('demand',${d.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='project'){
+    html = list.map(p=>`<tr>
+      <td><strong>${esc(p.name)}</strong></td><td>${esc(p.customer)}</td><td>${esc(p.owner)}</td><td>${esc(p.amount)}</td>
+      <td style="min-width:110px;"><div style="display:flex;align-items:center;gap:8px;"><div style="flex:1;height:6px;background:#F5F5F5;border-radius:3px;overflow:hidden;"><div style="height:100%;width:${p.progress}%;background:${p.progress>=100?'#16A34A':'#C41E3A'};border-radius:3px;"></div></div><span style="font-size:12px;color:var(--text-sub);">${p.progress}%</span></div></td>
+      <td>${statusTag(p.status)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('project',${p.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('project',${p.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='customer'){
+    html = list.map(c=>`<tr>
+      <td><strong>${esc(c.name)}</strong></td><td>${esc(c.industry)}</td><td>${esc(c.contact)}</td><td>${esc(c.phone)}</td>
+      <td>${esc(c.source)}</td><td>${levelTag(c.level)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('customer',${c.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('customer',${c.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='contract'){
+    html = list.map(c=>`<tr>
+      <td><strong>${esc(c.name)}</strong></td><td>${esc(c.type)}</td><td>${esc(c.party)}</td><td>${esc(c.amount)}</td>
+      <td>${statusTag(c.sign)}</td><td>${statusTag(c.perform)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('contract',${c.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('contract',${c.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='finance'){
+    html = list.map(f=>`<tr>
+      <td><strong>${esc(f.no)}</strong></td><td>${esc(f.project)}</td><td>${esc(f.amount)}</td><td>${esc(f.role)}</td>
+      <td>${statusTag(f.status)}</td><td>${esc(f.date)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('finance',${f.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('finance',${f.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='partner'){
+    html = list.map(p=>`<tr>
+      <td><strong>${esc(p.name)}</strong></td><td>${levelTag(p.level)}</td><td>${esc(p.tags)}</td><td>${esc(p.region)}</td>
+      <td>${p.projects} 个</td><td>${esc(p.commission)}</td>
+      <td class="tb-actions"><button class="btn-link" onclick="openModal('partner',${p.id})">编辑</button><button class="btn-link" style="color:#DC2626;" onclick="removeItem('partner',${p.id})">删除</button></td>
+    </tr>`).join('');
+  } else if(type==='member'){
+    html = list.map(m=>`<tr>
+      <td><strong>${esc(m.name)}</strong></td><td>${esc(m.role)}</td><td>${esc(m.phone)}</td>
+      <td>${statusTag(m.status)}</td><td>${esc(m.join)}</td>
+      <td class="tb-actions"><button class="btn-link" style="color:#DC2626;" onclick="removeItem('member',${m.id})">移除</button></td>
+    </tr>`).join('');
+  }
+  const el = document.getElementById(id);
+  if(el) el.innerHTML = html || `<tr><td colspan="8"><div class="empty"><div class="ei">📭</div><div class="et">暂无数据，点击右上角按钮创建</div></div></td></tr>`;
+}
+
+/* ---------- renderAiLogs 覆盖（无变化逻辑，保留） ---------- */
+/* 原 renderAiLogs 已满足需求，仅在 AI 页头部注入工具栏 */
+
+/* ---------- 初始化 ---------- */
+function upInit(){
+  upEnsureAuthUI();
+  applyRole();
+  upEnsureNotify();
+  upEnsureDataExtras();
+  upEnsureRoleAssign();
+  upEnsureUpgrade();
+  upEnsureAiToolbar();
+  upEnsureReset();
+  upRenderRoleAssign();
+  upRenderNotifyBadge();
+  /* 原脚本 init 的 renderAll 早于本升级层执行，此处用修复后的 buildInviteLink 重渲染邀请链接 */
+  try{ renderInvite(); renderInviteModal(); }catch(e){}
+}
+upInit();
+
+} // end __coopUpgraded guard
+
+</script>
+<script>
+/* ============================================================
+ * 合作伙伴端 → 中央共享总线桥接
+ * ① 合作伙伴数据 ↔ admin 合作伙伴管理
+ * ② 公告推送（admin 发布 → coop 通知）
+ * ③ 资源/需求发布 → admin 可见
+ * ============================================================ */
+(function(){
+  function escC(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; }
+  function hasStore(){ return !!(window.store && window.KEYS); }
+  function coopPartners(){
+    if(!hasStore()) return [];
+    var list=window.store.get(window.KEYS.partners, [])||[];
+    return list.map(function(p){
+      return {
+        id:'CP'+p.id, name:p.name||'', level:p.level||'合作伙伴',
+        tags: typeof p.tags==='string' ? p.tags.split('/') : (Array.isArray(p.tags)?p.tags:[]),
+        region:p.region||'', projects:p.projects||0,
+        commission: parseFloat(String(p.commission||'0').replace(/[万元¥,]/g,''))*10000||0,
+        subs:0, status:'正常'
+      };
+    });
+  }
+  function pushPartners(){
+    try{ window.parent.postMessage({type:'dcSet', key:'coopPartners', data:coopPartners()}, '*'); }catch(e){}
+  }
+  function pushResources(){
+    try{
+      if(!hasStore()) return;
+      var res=window.store.get(window.KEYS.resources, [])||[];
+      var dem=window.store.get(window.KEYS.demands, [])||[];
+      var total=[].concat(res.map(function(r){return {type:'资源', id:'RES'+r.id, name:r.name||'', status:r.status||'正常', submit:r.time||''};}), dem.map(function(d){return {type:'需求', id:'DEM'+d.id, name:d.name||'', status:d.status||'正常', submit:d.time||''};}));
+      window.parent.postMessage({type:'dcSet', key:'coopResources', data:total}, '*');
+    }catch(e){}
+  }
+  setTimeout(pushPartners, 800);
+  setTimeout(pushResources, 1100);
+
+  /* 监听 admin 合作伙伴 → 合并到本地 */
+  window.addEventListener('message', function(e){
+    var d=e.data;
+    if(!d || d.type!=='dcData') return;
+    if(d.key==='partners' && Array.isArray(d.data) && hasStore()){
+      var local=window.store.get(window.KEYS.partners, [])||[];
+      var changed=false;
+      d.data.forEach(function(p){
+        if(!p || !p.name) return;
+        var exists=local.some(function(x){ return x.name===p.name; });
+        if(!exists){
+          local.unshift({ id: local.length+1, name:p.name, level:p.level||'合作伙伴', tags:Array.isArray(p.tags)?p.tags.join('/'):(p.tags||''), region:p.region||'', projects:p.projects||0, commission: p.commission? (p.commission>=10000?(p.commission/10000).toFixed(1)+'万元':p.commission+'元') : '0元' });
+          changed=true;
+        }
+      });
+      if(changed){ window.store.set(window.KEYS.partners, local); }
+    } else if(d.key==='notices' && Array.isArray(d.data) && hasStore()){
+      var notifies=window.store.get(window.KEYS.notifies, [])||[];
+      var before=notifies.length;
+      d.data.slice(0,5).forEach(function(n){
+        if(!n || !n.title) return;
+        var exists=notifies.some(function(x){ return x.text && x.text.indexOf(n.title)>=0; });
+        if(!exists){ notifies.unshift({ id: Date.now()+Math.floor(Math.random()*1000), type:'blue', text:'【平台公告】'+n.title+(n.content?'：'+String(n.content).slice(0,40):''), time:'刚刚' }); }
+      });
+      if(notifies.length!==before){ window.store.set(window.KEYS.notifies, notifies); }
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

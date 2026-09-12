@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字中国AI · 离线平台入口</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0f1023 0%, #1a1b3a 50%, #2d1b4e 100%);
+    min-height: 100vh; color: #fff; padding: 50px 20px 60px;
+  }
+  .container { max-width: 820px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 44px; }
+  .logo {
+    width: 80px; height: 80px; border-radius: 22px;
+    background: linear-gradient(135deg, #C41E3A, #E85A70);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 40px; font-weight: 900; box-shadow: 0 10px 34px rgba(196,30,58,.45);
+    margin-bottom: 18px;
+  }
+  .title { font-size: 34px; font-weight: 800; letter-spacing: 3px; }
+  .subtitle { color: rgba(255,255,255,.6); margin-top: 10px; font-size: 14px; }
+  .badge {
+    display: inline-block; margin-top: 14px; padding: 5px 18px;
+    background: rgba(34,197,94,.2); border: 1px solid rgba(34,197,94,.5);
+    color: #22C555; border-radius: 30px; font-size: 12px;
+  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+  .card {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 18px; padding: 22px; text-decoration: none; color: #fff;
+    transition: all .2s; display: block; position: relative;
+  }
+  .card:hover { background: rgba(255,255,255,.13); transform: translateY(-4px); border-color: rgba(232,90,112,.55); }
+  .card .ico { font-size: 30px; margin-bottom: 12px; }
+  .card .nm { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  .card .ds { font-size: 12px; color: rgba(255,255,255,.55); line-height: 1.6; }
+  .card .open {
+    position: absolute; right: 16px; top: 16px;
+    background: rgba(232,90,112,.25); color: #fff; font-size: 11px;
+    padding: 3px 10px; border-radius: 20px;
+  }
+  .tip {
+    margin-top: 40px; padding: 18px 22px; border-radius: 14px;
+    background: rgba(255,255,255,.05); border: 1px dashed rgba(255,255,255,.15);
+    font-size: 12px; color: rgba(255,255,255,.5); line-height: 2;
+  }
+  .footer { text-align: center; margin-top: 30px; font-size: 12px; color: rgba(255,255,255,.3); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">数</div>
+    <div class="title">数字中国AI</div>
+    <div class="subtitle">一体化智能商业增长平台 · 离线版入口</div>
+    <div class="badge">✓ 免部署 · 双击即用</div>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="OPC用户端.html">
+      <div class="open">打开</div>
+      <div class="ico">🏪</div>
+      <div class="nm">OPC用户端</div>
+      <div class="ds">内容创作者工作台，AI驱动的商业操作系统</div>
+    </a>
+    <a class="card" href="买家端-交易商城.html">
+      <div class="open">打开</div>
+      <div class="ico">🛒</div>
+      <div class="nm">买家端 · 交易商城</div>
+      <div class="ds">一站式智能交易平台，全品类商品选购</div>
+    </a>
+    <a class="card" href="供应链商家端.html">
+      <div class="open">打开</div>
+      <div class="ico">📦</div>
+      <div class="nm">供应链商家端</div>
+      <div class="ds">供应商管理后台，商品上架与订单处理</div>
+    </a>
+    <a class="card" href="合作伙伴端.html">
+      <div class="open">打开</div>
+      <div class="ico">🤝</div>
+      <div class="nm">合作伙伴端</div>
+      <div class="ds">数字中国AI生态资源连接器</div>
+    </a>
+    <a class="card" href="数据大屏.html">
+      <div class="open">打开</div>
+      <div class="ico">📊</div>
+      <div class="nm">数据大屏</div>
+      <div class="ds">全球业务数据大屏，多平台经营数据一屏可视</div>
+    </a>
+    <a class="card" href="超级管理员端.html">
+      <div class="open">打开</div>
+      <div class="ico">⚙️</div>
+      <div class="nm">超级管理员端</div>
+      <div class="ds">AI超级管理员后台，全局数据与系统配置</div>
+    </a>
+    <a class="card" href="OPC商学院-报名缴费.html">
+      <div class="open">打开</div>
+      <div class="ico">📚</div>
+      <div class="nm">OPC商学院 · 报名缴费</div>
+      <div class="ds">跨境课程选课、报名、在线缴费</div>
+    </a>
+  </div>
+
+  <div class="tip">
+    💡 <b>离线版说明：</b><br>
+    · 本文件夹内所有 HTML 均<b>独立可运行</b>，无需安装环境、无需启动后端服务，双击即可打开。<br>
+    · 页面数据为内置演示数据（含16门跨境课程、供应链、合作伙伴、数据大屏等）。<br>
+    · AI 对话、云端同步等需要联网/后端的增强功能在离线模式下不可用，但核心业务页面正常。<br>
+    · 超级管理员端登录：管理员账号 <b>H</b> / 密码 <b>123456</b>
+  </div>
+
+  <div class="footer">数字中国AI · DIGITAL BUSINESS OS · 离线版</div>
+</div>
+</body>
+</html>

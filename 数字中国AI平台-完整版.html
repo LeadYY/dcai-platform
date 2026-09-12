@@ -1,0 +1,1036 @@
+STEP2 anchor MISS STEP1 anchor MISS <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字中国 · 四合一智能平台（离线版）</title>
+<style>
+:root {
+    --red: #C41E3A;
+    --red-dark: #A0122F;
+    --red-light: #FDE8EC;
+    --bg: #F5F6FA;
+    --white: #FFFFFF;
+    --text: #1A1A2E;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --border: #E5E7EB;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: all 0.3s ease;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+
+/* ===== Loading ===== */
+.loading-overlay {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 9999; transition: opacity 0.4s ease;
+}
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner {
+    width: 44px; height: 44px;
+    border: 3px solid var(--border);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { color: var(--text-secondary); font-size: 14px; }
+
+/* ===== Login Page ===== */
+.login-page {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.login-card {
+    background: var(--white); border-radius: 20px; padding: 40px 36px;
+    width: 420px; max-width: 92vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.login-logo {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--red); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 20px; margin: 0 auto 16px;
+}
+.login-title {
+    text-align: center; font-size: 24px; font-weight: 700;
+    color: var(--text); margin-bottom: 8px;
+}
+.login-subtitle {
+    text-align: center; font-size: 13px; color: var(--text-muted); margin-bottom: 28px;
+}
+.login-input {
+    width: 100%; height: 46px;
+    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+    padding: 0 16px; font-size: 14px; margin-bottom: 14px; outline: none;
+    transition: var(--transition);
+}
+.login-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(196,30,58,0.1); }
+.login-btn {
+    width: 100%; height: 46px; background: var(--red); color: white;
+    border: none; border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    transition: var(--transition); margin-bottom: 12px;
+}
+.login-btn:hover { background: var(--red-dark); transform: translateY(-1px); }
+.login-switch {
+    text-align: center; font-size: 13px; color: var(--text-secondary); cursor: pointer;
+}
+.login-switch span { color: var(--red); font-weight: 600; }
+.login-switch span:hover { text-decoration: underline; }
+.login-hint { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 12px; }
+.login-error { color: #EF4444; font-size: 13px; text-align: center; margin-bottom: 10px; display: none; }
+
+/* ===== App Container ===== */
+.app-container { display: none; flex-direction: column; height: 100vh; }
+
+/* ===== Header ===== */
+.app-header {
+    height: 56px; background: var(--white);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; gap: 12px; }
+.header-logo {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--red); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 13px;
+}
+.header-brand { font-weight: 700; font-size: 16px; color: var(--text); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--red); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.logout-btn {
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+    background: none; border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 20px; transition: var(--transition);
+}
+.logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ===== Tabs ===== */
+.tab-bar {
+    display: flex; background: var(--white);
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+    overflow-x: auto;
+}
+.tab-item {
+    padding: 14px 24px; font-size: 14px; font-weight: 500;
+    color: var(--text-secondary); cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition); white-space: nowrap;
+    background: none; border-top: none; border-left: none; border-right: none;
+}
+.tab-item:hover { color: var(--red); }
+.tab-item.active { color: var(--red); border-bottom-color: var(--red); font-weight: 600; }
+
+/* ===== Back Bar ===== */
+.tab-bar { display: none !important; }
+.back-bar {
+    background: #FFF;
+    border-bottom: 1px solid #F0E8EA;
+    padding: 0 24px;
+    height: 44px;
+    display: none;
+    align-items: center;
+    flex-shrink: 0;
+}
+.back-btn {
+    background: none;
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 5px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: var(--transition);
+    font-family: inherit;
+}
+.back-btn:hover { background: var(--red); color: #FFF; }
+
+/* ===== Content ===== */
+.tab-content { flex: 1; position: relative; overflow: hidden; }
+.tab-panel {
+    position: absolute; inset: 0; display: none;
+}
+.tab-panel.active { display: flex; }
+.tab-panel iframe {
+    width: 100%; height: 100%; border: none;
+}
+
+/* ===== Brand Hero (Landing Page) ===== */
+.brand-hero {
+    flex: 1;
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 60px;
+    overflow-y: auto;
+}
+.brand-hero.hidden { display: none; }
+.brand-logo {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--red);
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+}
+.brand-slogan {
+    font-size: 15.5px;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    margin-bottom: 36px;
+    font-weight: 400;
+}
+.brand-cta {
+    display: inline-block;
+    background: var(--red);
+    color: #FFFFFF;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 16px 48px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(196,30,58,0.35);
+    transition: var(--transition);
+    margin-bottom: 48px;
+    font-family: inherit;
+}
+.brand-cta:hover {
+    background: var(--red-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(196,30,58,0.45);
+}
+.brand-card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 780px;
+    width: 100%;
+}
+.brand-card {
+    background: #FDF8F9;
+    border: 1px solid #F3E0E4;
+    border-radius: 16px;
+    width: calc((100% - 40px) / 3);
+    padding: 28px 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+.brand-card:hover {
+    border-color: var(--red);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(196,30,58,0.1);
+    background: #FFF;
+}
+.brand-card .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: var(--red);
+    color: #fff;
+    display: grid; place-items: center;
+    font-size: 22px;
+    margin: 0 auto 16px;
+}
+.brand-card .card-title {
+    font-size: 16px; font-weight: 700;
+    color: var(--red); margin-bottom: 6px;
+}
+.brand-card .card-desc {
+    font-size: 12.5px; color: var(--text-secondary);
+    line-height: 1.6;
+}
+@media (max-width: 560px) {
+    .brand-card { width: 100%; }
+    .brand-logo { font-size: 32px; }
+    .brand-cta { padding: 14px 36px; font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">正在加载平台组件...</div>
+</div>
+
+<!-- Login Page -->
+<div class="login-page" id="loginPage">
+    <div class="login-card">
+        <div class="login-logo">数</div>
+        <div class="login-title" id="loginTitle">登录数字中国AI</div>
+        <div class="login-subtitle" id="loginSubtitle">所想即所得，万种创意可交易</div>
+        <div class="login-error" id="loginError"></div>
+        <input class="login-input" id="loginUsername" placeholder="昵称 / 手机号" autocomplete="username">
+        <input class="login-input" id="loginPassword" type="password" placeholder="密码" autocomplete="current-password">
+        <div id="registerExtra" style="display:none;">
+          <input class="login-input" id="regPhone" placeholder="手机号（11位）" maxlength="11" inputmode="numeric" autocomplete="tel">
+          <div style="display:flex;gap:8px;align-items:flex-start;">
+            <input class="login-input" id="regCode" placeholder="验证码" maxlength="6" inputmode="numeric" style="flex:1;min-width:0;width:auto;">
+            <button type="button" class="login-btn" id="sendCodeBtn" onclick="sendSmsCode()" style="flex:0 0 auto;width:auto;padding:0 16px;font-size:13px;white-space:nowrap;margin-bottom:14px;">获取验证码</button>
+          </div>
+        </div>
+        <button class="login-btn" id="loginSubmitBtn" onclick="doLogin()">登 录</button>
+        <div class="login-switch" id="loginSwitchText">
+            还没有账号？<span id="loginSwitchAction">立即注册</span>
+        </div>
+        <div class="login-hint" id="loginHint"></div>
+    </div>
+</div>
+
+<!-- App Container -->
+<div class="app-container" id="appContainer">
+    <header class="app-header">
+        <div class="header-left">
+            <div class="header-logo">数</div>
+            <span class="header-brand">数字中国AI</span>
+        </div>
+        <div class="header-right">
+            <span id="headerNick" style="font-size:14px;color:var(--text-secondary)"></span>
+            <div class="header-avatar" id="headerAvatar" onclick="doLogout()" title="点击退出"></div>
+            <button class="logout-btn" onclick="doLogout()">退出登录</button>
+        </div>
+    </header>
+
+    <!-- Brand Hero Landing Page -->
+    <div class="brand-hero" id="brandHero">
+        <div class="brand-logo">数字中国</div>
+        <div class="brand-slogan">一体化智能商业增长平台</div>
+        <button class="brand-cta" onclick="switchTabFromHero('opc')">AGENTIC COMMERCE</button>
+        <div class="brand-card-grid" id="brandCardGrid"></div>
+    </div>
+
+    <div class="tab-bar" id="tabBar"></div>
+    <div class="back-bar" id="backBar">
+        <button class="back-btn" onclick="goBackHome()">&#8592; 返回首页</button>
+    </div>
+    <div class="tab-content" id="tabContent"></div>
+</div>
+
+<script>
+// ===== 推广链接参数解析（?invite= 或 ?ref= 推荐人用户名）=====
+(function(){
+  window._dcInviteRef = '';
+  try{
+    var q = location.search || '';
+    var m = q.match(/[?&](invite|ref)=([^&]+)/);
+    if(m && m[2]){ localStorage.setItem('dcai_invite', decodeURIComponent(m[2])); }
+    window._dcInviteRef = localStorage.getItem('dcai_invite') || '';
+  }catch(e){}
+})();
+
+// ===== Page Content (base64) =====
+var PAGE_CONTENT = {}; // 端口页面已外部化为 pages/*.html 按需加载（瘦身优化）;
+
+
+// ===== User Database =====
+var DEFAULT_USERS = [
+    { username: 'H', password: '123456', role: 'admin', nick: '超级管理员' },
+    { username: 'demo', password: 'demo', role: 'user', nick: '体验用户' },
+    { username: 'cs', password: '123456', role: 'user', nick: '测试账号' }
+];
+
+// ===== Safe Storage Wrapper (mobile WebView / file:// fallback) =====
+var __memStore = {};
+function safeGet(kind, key) {
+    try {
+        var s = (kind === 'local') ? window.localStorage : window.sessionStorage;
+        return s.getItem(key);
+    } catch (e) {
+        return (key in __memStore) ? __memStore[key] : null;
+    }
+}
+function safeSet(kind, key, val) {
+    __memStore[key] = val;
+    try {
+        var s = (kind === 'local') ? window.localStorage : window.sessionStorage;
+        s.setItem(key, val);
+    } catch (e) {}
+}
+function safeRemove(kind, key) {
+    delete __memStore[key];
+    try {
+        var s = (kind === 'local') ? window.localStorage : window.sessionStorage;
+        s.removeItem(key);
+    } catch (e) {}
+}
+
+// ===== Session Management =====
+function getUsers() {
+    var saved = safeGet('local', 'dcai_users');
+    if (!saved) return DEFAULT_USERS;
+    try {
+        return JSON.parse(saved);
+    } catch (e) {
+        return DEFAULT_USERS;
+    }
+}
+function saveUsers(users) {
+    safeSet('local', 'dcai_users', JSON.stringify(users));
+}
+function getSession() {
+    var s = safeGet('session', 'dcai_session');
+    if (!s) return null;
+    var user = null;
+    try {
+        user = JSON.parse(s);
+    } catch (e) {
+        clearSession();
+        return null;
+    }
+    if (!user || typeof user !== 'object' ||
+        typeof user.username !== 'string' || !user.username ||
+        typeof user.role !== 'string' || !user.role ||
+        typeof user.nick !== 'string' || !user.nick) {
+        clearSession();
+        return null;
+    }
+    return user;
+}
+function setSession(user) {
+    safeSet('session', 'dcai_session', JSON.stringify(user));
+    try { localStorage.setItem('dcai_user', JSON.stringify(user)); } catch (e) {}
+}
+function clearSession() {
+    safeRemove('session', 'dcai_session');
+    try { localStorage.removeItem('dcai_user'); } catch (e) {}
+}
+
+// ===== DOM Helpers =====
+function $(id) { return document.getElementById(id); }
+
+// ===== Login Logic =====
+var isLoginMode = true;
+
+function showError(msg) {
+    var el = $('loginError');
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(function() { el.style.display = 'none'; }, 3000);
+}
+
+function switchLoginMode() {
+    isLoginMode = !isLoginMode;
+    if (isLoginMode) {
+        $('loginTitle').textContent = '登录数字中国AI';
+        $('loginSubtitle').textContent = '所想即所得，万种创意可交易';
+        $('loginSubmitBtn').textContent = '登 录';
+        $('loginSwitchText').innerHTML = '还没有账号？<span id="loginSwitchAction">立即注册</span>';
+        $('loginHint').textContent = '';
+        var re = $('registerExtra'); if (re) re.style.display = 'none';
+    } else {
+        $('loginTitle').textContent = '注册数字中国AI';
+        $('loginSubtitle').textContent = '创建您的专属AI创意账户';
+        $('loginSubmitBtn').textContent = '注 册';
+        $('loginSwitchText').innerHTML = '已有账号？<span id="loginSwitchAction">立即登录</span>';
+        $('loginHint').textContent = '';
+        var re = $('registerExtra'); if (re) re.style.display = 'block';
+    }
+    }
+
+// 登录/注册切换：触发源绑定在父级切换条（初始化绑定一次，单击只切一次）
+$('loginSwitchText').onclick = switchLoginMode;
+
+function doLogin() {
+    var account = $('loginUsername').value.trim();
+    var password = $('loginPassword').value.trim();
+    if (!account || !password) {
+        showError('请输入账号和密码');
+        return;
+    }
+
+    if (isLoginMode) {
+        /* 登录：昵称或手机号均可，优先走服务器校验 */
+        if (window.__remoteLogin) {
+            window.__remoteLogin(account, password).then(function(res){
+                if (res.ok) {
+                    fetch('/api/me', { headers: { 'x-auth-token': localStorage.getItem('dc_token') || '' } })
+                        .then(function(r){ return r.json(); })
+                        .then(function(me){
+                            var u = (me && me.ok && me.user) ? me.user : { username: account, nick: account, role: 'user' };
+                            setSession(u);
+                            showApp(u);
+                        }).catch(function(){ 
+                            var u = { username: account, nick: account, role: 'user' };
+                            setSession(u); showApp(u);
+                        });
+                } else {
+                    showError(res.error || '账号或密码错误');
+                }
+            });
+            return;
+        }
+        /* 本地模式兜底 */
+        var users = getUsers();
+        var found = null;
+        for (var i = 0; i < users.length; i++) {
+            if ((users[i].username === account || users[i].phone === account) && users[i].password === password) {
+                found = users[i]; break;
+            }
+        }
+        if (found) { setSession(found); showApp(found); }
+        else { showError('账号或密码错误'); }
+    } else {
+        /* 注册：昵称 + 密码 + 手机号 + 验证码 */
+        var nick = account;
+        var phone = ($('regPhone') ? $('regPhone').value.trim() : '');
+        var code = ($('regCode') ? $('regCode').value.trim() : '');
+        if (nick.length < 2 || nick.length > 20) { showError('昵称长度需为 2-20 个字符'); return; }
+        if (password.length < 4) { showError('密码至少 4 位'); return; }
+        if (!/^1\d{10}$/.test(phone)) { showError('请输入正确的11位手机号'); return; }
+        if (!/^\d{6}$/.test(code)) { showError('请输入6位验证码'); return; }
+
+        if (window.__remoteRegister) {
+            /* 服务器模式：注册写入云端用户表，注册即登录 */
+            window.__remoteRegister(nick, password, phone, code, window._dcInviteRef || '').then(function(res){
+                if (res.ok && res.user) {
+                    setSession(res.user);
+                    showApp(res.user);
+                } else {
+                    showError(res.error || '注册失败');
+                }
+            });
+        } else {
+            showError('本地模式不支持手机号注册，请通过服务器地址访问');
+        }
+    }
+}
+
+/* 发送短信验证码（演示模式：接口直接返回验证码并显示在提示区） */
+var _smsCountdown = 0;
+function sendSmsCode() {
+    var phone = ($('regPhone') ? $('regPhone').value.trim() : '');
+    if (!/^1\d{10}$/.test(phone)) { showError('请先输入正确的11位手机号'); return; }
+    if (_smsCountdown > 0) return;
+    var btn = $('sendCodeBtn');
+    fetch('/api/sms/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: phone })
+    }).then(function(r){ return r.json(); }).then(function(res){
+        if (res && res.ok) {
+            var hint = $('loginHint');
+            if (hint) hint.textContent = '验证码已发送：' + (res.code || '') + '（演示环境直接显示，5分钟有效）';
+            _smsCountdown = 60;
+            btn.disabled = true;
+            var timer = setInterval(function(){
+                _smsCountdown--;
+                if (_smsCountdown <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.textContent = '获取验证码';
+                } else {
+                    btn.textContent = '重新获取(' + _smsCountdown + 's)';
+                }
+            }, 1000);
+        } else {
+            showError((res && res.error) || '验证码发送失败');
+        }
+    }).catch(function(){ showError('无法连接服务器，请确认后端已启动'); });
+}
+
+function showApp(user) {
+    $('loginPage').style.display = 'none';
+    $('appContainer').style.display = 'flex';
+    $('headerAvatar').textContent = (user.nick || '').charAt(0).toUpperCase();
+    $('headerNick').textContent = user.nick;
+
+    // Build tabs based on role
+    var tabs = [
+        { id: 'opc', label: 'OPC 工作台' },
+        { id: 'trade', label: '交易商城' },
+        { id: 'supply', label: '商家供应链端' },
+        { id: 'coop', label: '合作伙伴端' },
+        { id: 'dash', label: '数据大屏' }
+    ];
+    if (user.role === 'admin') {
+        tabs.push({ id: 'admin', label: 'AI 超级管理员' });
+    }
+
+    var tabBar = $('tabBar');
+    var tabContent = $('tabContent');
+    tabBar.innerHTML = '';
+    tabContent.innerHTML = '';
+
+    for (var i = 0; i < tabs.length; i++) {
+        var t = tabs[i];
+        var btn = document.createElement('button');
+        btn.className = 'tab-item';
+        btn.textContent = t.label;
+        btn.setAttribute('data-tab', t.id);
+        btn.onclick = function() { switchTab(this.getAttribute('data-tab')); };
+        tabBar.appendChild(btn);
+
+        var panel = document.createElement('div');
+        panel.className = 'tab-panel';
+        panel.id = 'panel-' + t.id;
+        var iframe = document.createElement('iframe');
+        iframe.id = 'iframe-' + t.id;
+        /* blob URL inherits origin, no sandbox needed */
+        panel.appendChild(iframe);
+        tabContent.appendChild(panel);
+    }
+
+    // Global state
+    window._loaded = { opc: false, trade: false, supply: false, coop: false, admin: false, dash: false };
+    window._currentTab = '';
+
+    // Build brand hero entry cards
+    var cardGrid = $('brandCardGrid');
+    cardGrid.innerHTML = '';
+    var cards = [
+        { id: 'opc', icon: '🏪', title: 'OPC用户端', desc: '内容创作者工作台，AI驱动的商业操作系统' },
+        { id: 'supply', icon: '📦', title: '供应链商家端', desc: '供应商管理后台，商品上架与订单处理' },
+        { id: 'trade', icon: '🛒', title: '买家端（交易商城）', desc: '一站式智能交易平台，全品类商品选购' },
+        { id: 'coop', icon: '🤝', title: '合作伙伴端', desc: '数字中国AI生态资源连接器，合作、资源、需求、项目一站式管理' },
+        { id: 'dash', icon: '📊', title: '数据大屏', desc: '数字中国全球业务数据大屏，多平台经营数据一屏可视' }
+    ];
+    if (user.role === 'admin') {
+        cards.push({ id: 'admin', icon: '⚙️', title: '超级管理员端', desc: 'AI超级管理员后台，全局数据与系统配置' });
+    }
+    for (var c = 0; c < cards.length; c++) {
+        var cd = cards[c];
+        var divEl = document.createElement('div');
+        divEl.className = 'brand-card';
+        divEl.setAttribute('data-tab', cd.id);
+        if (cd.external) {
+            divEl.onclick = function() { window.open('pages/enroll.html', '_blank'); };
+        } else {
+            divEl.onclick = function() { switchTabFromHero(this.getAttribute('data-tab')); };
+        }
+        divEl.innerHTML = '<div class="card-icon">' + cd.icon + '</div><div class="card-title">' + cd.title + '</div><div class="card-desc">' + cd.desc + '</div>';
+        cardGrid.appendChild(divEl);
+    }
+    // Show brand hero, hide tab content
+    $('brandHero').classList.remove('hidden');
+    $('tabContent').style.display = 'none';
+    $('tabBar').style.display = 'none';
+    $('backBar').style.display = 'none';
+
+    // Hide loading overlay
+    setTimeout(function() {
+        var lo = $('loadingOverlay');
+        if (lo) lo.classList.add('hidden');
+    }, 500);
+}
+
+function loadTab(tab) {
+    var ifr = document.getElementById('iframe-' + tab);
+    if (!ifr) return;
+    /* 离线版：直接加载同目录下的离线 HTML 文件（免后端） */
+    var OFFLINE_MAP = {
+        'opc': 'OPC用户端.html',
+        'trade': '买家端-交易商城.html',
+        'supply': '供应链商家端.html',
+        'coop': '合作伙伴端.html',
+        'dash': '数据大屏.html',
+        'admin': '超级管理员端.html',
+        'enroll': 'OPC商学院-报名缴费.html'
+    };
+    var f = OFFLINE_MAP[tab] || (tab + '.html');
+    ifr.src = f;
+    window._loaded[tab] = true;
+}
+
+function switchTabFromHero(tab) {
+    $('brandHero').classList.add('hidden');
+    $('tabContent').style.display = '';
+    $('backBar').style.display = 'flex';
+    loadTab(tab);
+    // Update panels
+    var panels = document.querySelectorAll('.tab-panel');
+    for (var j = 0; j < panels.length; j++) {
+        panels[j].classList.remove('active');
+    }
+    var panel = document.getElementById('panel-' + tab);
+    if (panel) panel.classList.add('active');
+    window._currentTab = tab;
+}
+
+function goBackHome() {
+    $('backBar').style.display = 'none';
+    $('tabContent').style.display = 'none';
+    $('brandHero').classList.remove('hidden');
+    window._currentTab = '';
+}
+
+function switchTab(tab) {
+    if (!tab || tab === window._currentTab) return;
+    // Hide brand hero if visible
+    $('brandHero').classList.add('hidden');
+    $('tabContent').style.display = '';
+    loadTab(tab);
+
+    // Update tab buttons
+    var buttons = document.querySelectorAll('.tab-item');
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+        if (buttons[i].getAttribute('data-tab') === tab) {
+            buttons[i].classList.add('active');
+        }
+    }
+
+    // Update panels
+    var panels = document.querySelectorAll('.tab-panel');
+    for (var j = 0; j < panels.length; j++) {
+        panels[j].classList.remove('active');
+    }
+    var panel = document.getElementById('panel-' + tab);
+    if (panel) panel.classList.add('active');
+
+    window._currentTab = tab;
+}
+
+function doLogout() {
+    clearSession();
+    // Clear iframes
+    ['opc','trade','supply','coop','admin','dash'].forEach(function(key) {
+        var ifr = document.getElementById('iframe-' + key);
+        if (ifr) {
+            if (ifr._blobUrl) URL.revokeObjectURL(ifr._blobUrl);
+            try { ifr.srcdoc = ''; } catch (e) {}
+            ifr.src = '';
+            ifr._blobUrl = null;
+        }
+        window._loaded[key] = false;
+    });
+    window._currentTab = '';
+    $('backBar').style.display = 'none';
+    $('appContainer').style.display = 'none';
+    // Reset brand hero
+    $('brandHero').classList.remove('hidden');
+    $('tabContent').style.display = 'none';
+    $('loginPage').style.display = 'flex';
+    $('loginUsername').value = '';
+    $('loginPassword').value = '';
+}
+
+// ===== Enter key on login =====
+$('loginUsername').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') $('loginPassword').focus();
+});
+$('loginPassword').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+});
+
+// ===== 离线版：免登录，直接以超级管理员进入 =====
+(function(){
+  try{
+    localStorage.setItem('dcai_session', JSON.stringify({
+      username: 'H', role: 'admin', nick: '超级管理员'
+    }));
+    try{ localStorage.setItem('dc_token', 'offline_' + Date.now()); }catch(e){}
+  }catch(e){}
+})();
+
+// ===== Init - check session on load =====
+(function() {
+    var session = getSession();
+    if (session) {
+        showApp(session);
+    } else {
+        $('loadingOverlay').classList.add('hidden');
+    }
+})();
+</script>
+
+<script>
+/* ===== 跨端口课程数据中转（admin → 平台 → opc）===== */
+(function(){
+  var KEY='dc_shared_courses_v1';
+  try{ window._sharedCourses=JSON.parse(localStorage.getItem(KEY))||[]; }catch(e){ window._sharedCourses=[]; }
+  window.addEventListener('message',function(e){
+    var d=e.data;
+    if(!d||typeof d!=='object')return;
+    if(d.type==='adminCourses'&&Array.isArray(d.data)){
+      window._sharedCourses=d.data;
+      try{ localStorage.setItem(KEY,JSON.stringify(d.data)); }catch(err){}
+      /* 广播给所有 iframe（opc 等） */
+      var fs=document.querySelectorAll('iframe');
+      for(var i=0;i<fs.length;i++){
+        try{ fs[i].contentWindow.postMessage({type:'coursesData',data:d.data},'*'); }catch(err){}
+      }
+    }else if(d.type==='getCourses'){
+      try{ e.source.postMessage({type:'coursesData',data:window._sharedCourses},'*'); }catch(err){}
+    }
+  });
+})();
+</script>
+<script>
+/* ============================================================
+ * 中央共享数据总线（全端口互通）
+ * admin / opc / supply / trade / coop / dash 全部通过父窗口交换数据
+ * ============================================================ */
+(function(){
+  var STORE_KEY='dc_shared_store_v1';
+  function loadStore(){ try{ var r=localStorage.getItem(STORE_KEY); return r?JSON.parse(r):{}; }catch(e){ return {}; } }
+  function saveStore(s){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(s)); }catch(e){} }
+
+  window.dcShared = {
+    _s: loadStore(),
+    get: function(key){ return this._s[key]; },
+    set: function(key, data){
+      this._s[key] = data;
+      saveStore(this._s);
+      this.broadcast(key, data);
+      if(key==='ports' || key==='portAuth'){ if(window.applyPortFilter) setTimeout(window.applyPortFilter, 60); }
+    },
+    broadcast: function(key, data){
+      var fs = document.querySelectorAll('iframe');
+      for(var i=0;i<fs.length;i++){
+        try{ fs[i].contentWindow.postMessage({type:'dcData', key:key, data:data}, '*'); }catch(e){}
+      }
+    },
+    // 兼容旧课程通道：课程数据同时作为共享 courses
+    has: function(key){ return this._s[key] !== undefined; }
+  };
+
+  window.addEventListener('message', function(e){
+    var d = e.data;
+    if(!d || typeof d !== 'object') return;
+    if(d.type === 'dcGet' && d.key !== undefined){
+      try{ e.source.postMessage({type:'dcData', key:d.key, data:window.dcShared.get(d.key), token:d.token||0}, '*'); }catch(err){}
+    } else if(d.type === 'dcSet' && d.key !== undefined){
+      window.dcShared.set(d.key, d.data);
+    } else if(d.type === 'adminCourses' && Array.isArray(d.data)){
+      window.dcShared.set('courses', d.data);
+    }
+  });
+
+  /* ---- 端口启停 / 按用户授权 → 真实控制平台入口 ---- */
+  function getSessionUser(){
+    try{
+      if(window.getSession) return window.getSession();
+      var s = localStorage.getItem('dcai_session');
+      return s ? JSON.parse(s) : null;
+    }catch(e){ return null; }
+  }
+  function applyPortFilter(){
+    var user = getSessionUser();
+    if(!user) return;
+    var ports = window.dcShared.get('ports');
+    if(!Array.isArray(ports) || ports.length===0) return;
+    var allowed = {};
+    ports.forEach(function(p){ allowed[p.id] = p.enabled !== false; });
+    var portAuth = window.dcShared.get('portAuth');
+    var personalized = false;
+    if(Array.isArray(portAuth)){
+      var ua = portAuth.filter(function(x){ return x.user === user.username; })[0];
+      if(ua && Array.isArray(ua.open)){
+        personalized = true;
+        var openSet = {};
+        ua.open.forEach(function(id){ openSet[id]=true; });
+        Object.keys(allowed).forEach(function(id){ if(!openSet[id]) allowed[id]=false; });
+      }
+    }
+    if(!personalized && user.role !== 'admin'){
+      // 普通用户默认可看到除"管理后台"外的所有启用端口（他人可注册使用各端口）
+      ports.forEach(function(p){
+        if(p.id === 'admin') allowed[p.id] = false;
+      });
+    }
+    document.querySelectorAll('.brand-card').forEach(function(el){
+      var t = el.getAttribute('data-tab');
+      if(t) el.style.display = allowed[t] ? '' : 'none';
+    });
+    document.querySelectorAll('.tab-item').forEach(function(el){
+      var t = el.getAttribute('data-tab');
+      if(t) el.style.display = allowed[t] ? '' : 'none';
+    });
+  }
+  window.applyPortFilter = applyPortFilter;
+
+  var grid = document.getElementById('brandCardGrid');
+  if(grid){
+    new MutationObserver(function(){ setTimeout(applyPortFilter, 60); }).observe(grid, {childList:true});
+  }
+  var tabBar = document.getElementById('tabBar');
+  if(tabBar){
+    new MutationObserver(function(){ setTimeout(applyPortFilter, 60); }).observe(tabBar, {childList:true});
+  }
+  setTimeout(applyPortFilter, 600);
+})();
+</script>
+
+<script>
+/* ============================================================
+ * 远程模式：通过后端服务器访问时，数据持久化到服务器并支持多人共享
+ * （file:// 本地打开时自动跳过，保持原有演示模式）
+ * ============================================================ */
+(function(){
+  var IS_REMOTE = window.location.protocol.indexOf('http') === 0;
+  if(!IS_REMOTE){
+    /* 本地模式：注册/数据仅存本机，提示用服务器地址才能多人共享 */
+    setTimeout(function(){
+      var page = document.getElementById('loginPage');
+      if(page && !document.getElementById('localModeBar')){
+        var bar = document.createElement('div');
+        bar.id = 'localModeBar';
+        bar.style.cssText = 'margin:10px 14px;padding:10px 14px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12px;line-height:1.7;text-align:left;';
+        bar.innerHTML = '当前为 <b>本地演示模式</b>：注册和数据仅保存在当前浏览器，管理员和其他人看不到。<br>如需多人共享与云端同步，请通过服务器地址访问：<b>http://192.168.1.30:3000</b>';
+        var card = page.querySelector('.login-card');
+        if(card){ page.insertBefore(bar, card); } else { page.insertBefore(bar, page.firstChild); }
+      }
+    }, 400);
+    return;
+  }
+
+  /* 健康探测：后端不可达时自动降级为静态演示模式（如 Cloudflare Pages 纯静态托管） */
+  function downgradeToLocal(){
+    if(window.__REMOTE_DOWNGRADED) return;
+    window.__REMOTE_DOWNGRADED = true;
+    window.__remoteLogin = null;
+    window.__remoteRegister = null;
+    try{
+      var us = JSON.parse(localStorage.getItem('dcai_users') || '[]');
+      if(!us.some(function(x){ return x.username === 'H'; })){
+        us.push({ username:'H', password:'123456', nick:'超级管理员', role:'admin' });
+        us.push({ username:'demo', password:'demo', nick:'体验用户', role:'user' });
+        localStorage.setItem('dcai_users', JSON.stringify(us));
+      }
+    }catch(e){}
+    setTimeout(function(){
+      var page = document.getElementById('loginPage');
+      if(page && !document.getElementById('localModeBar')){
+        var bar = document.createElement('div');
+        bar.id = 'localModeBar';
+        bar.style.cssText = 'margin:10px 14px;padding:10px 14px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12px;line-height:1.7;text-align:left;';
+        bar.innerHTML = '当前为 <b>静态演示模式</b>：界面功能可完整浏览，注册/登录/云端数据需部署后端服务后可用。';
+        var card = page.querySelector('.login-card');
+        if(card){ page.insertBefore(bar, card); } else { page.insertBefore(bar, page.firstChild); }
+      }
+    }, 400);
+  }
+  fetch('/api/health', { method:'GET' }).then(function(r){
+    if(!r.ok){ downgradeToLocal(); }
+  }).catch(function(){ downgradeToLocal(); });
+
+  function remoteSet(key, data){
+    if(window.__REMOTE_DOWNGRADED) return;
+    try{
+      var token = '';
+      try{ token = localStorage.getItem('dc_token') || ''; }catch(e){}
+      fetch('/api/set/' + encodeURIComponent(key), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+        body: JSON.stringify(data)
+      }).then(function(r){
+        if(r.status === 401){ try{ localStorage.removeItem('dc_token'); }catch(e){} }
+      }).catch(function(){});
+    }catch(e){}
+  }
+
+  /* 登录成功后向服务器换取写权限 Token（存 localStorage） */
+  window.__remoteLogin = function(username, password){
+    if(!username || !password) return Promise.resolve({ok:false});
+    return fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ account: username, password: password })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if(res && res.ok && res.token){
+        try{ localStorage.setItem('dc_token', res.token); }catch(e){}
+        return {ok:true};
+      }
+      return {ok:false};
+    }).catch(function(){ return {ok:false, error:"无法连接服务器"}; });
+  };
+
+  /* 注册：同步到服务器用户表，注册即登录 */
+  window.__remoteRegister = function(nick, password, phone, code, referrer){
+    if(!nick || !password || !phone || !code) return Promise.resolve({ok:false, error:"昵称、密码、手机号、验证码均为必填"});
+    return fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nick: nick, password: password, phone: phone, code: code, referrer: referrer || '' })
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if(res && res.ok && res.token){
+        try{ localStorage.setItem("dc_token", res.token); }catch(e){}
+        return {ok:true, user: res.user};
+      }
+      return {ok:false, error: res.error || "注册失败"};
+    }).catch(function(){ return {ok:false, error:"无法连接服务器：请确认后端已启动，且通过 http://服务器IP:3000 访问（不要用本地文件或 localhost）"}; });
+  };
+
+  /* 增强 dcShared.set：写入后同步到服务器 */
+  var origSet = window.dcShared && window.dcShared.set;
+  if(origSet){
+    window.dcShared.set = function(key, data){
+      origSet.call(this, key, data);
+      remoteSet(key, data);
+    };
+  }
+
+  /* 从服务器拉取全量数据 → 合并到本地并广播给所有端口 */
+  function loadAll(){
+    if(window.__REMOTE_DOWNGRADED) return;
+    fetch('/api/get').then(function(r){ return r.json(); }).then(function(all){
+      if(!all || typeof all !== 'object') return;
+      var s = window.dcShared;
+      var fs = document.querySelectorAll('iframe');
+      var keys = Object.keys(all);
+      keys.forEach(function(k){
+        if(all[k] === undefined || all[k] === null) return;
+        s._s[k] = all[k];
+        for(var i=0;i<fs.length;i++){
+          try{ fs[i].contentWindow.postMessage({type:'dcData', key:k, data:all[k]}, '*'); }catch(e){}
+        }
+      });
+      if(window.applyPortFilter) setTimeout(window.applyPortFilter, 80);
+      if(keys.length){ var t=document.getElementById('dcRemoteStatus'); if(t) t.textContent = '· 云端同步'; }
+    }).catch(function(){});
+  }
+
+  /* 顶部显示远程连接状态 */
+  function showStatus(){
+    if(window.__REMOTE_DOWNGRADED) return;
+    if(document.getElementById('dcRemoteStatus')) return;
+    var h=document.getElementById('headerBar')||document.querySelector('.header, header, [class*="header"]');
+    var el=document.createElement('span');
+    el.id='dcRemoteStatus';
+    el.style.cssText='margin-left:10px;font-size:11px;color:#10b981;background:rgba(16,185,129,.12);padding:2px 8px;border-radius:8px;';
+    el.textContent='· 云端同步';
+    var dm=document.createElement('span');
+    dm.id='dcDataMode';
+    dm.title='当前为演示数据模式：用户/注册/推广关系为真实数据，商品/订单/财务等业务数据为演示模拟';
+    dm.style.cssText='margin-left:6px;font-size:11px;color:#d97706;background:rgba(217,119,6,.12);padding:2px 8px;border-radius:8px;cursor:help;';
+    dm.textContent='· 演示数据';
+    if(h){ h.appendChild(el); h.appendChild(dm); } else {
+      var t=document.createElement('div'); t.id='dcRemoteStatusWrap';
+      t.style.cssText='position:fixed;top:8px;right:12px;z-index:99999;font-size:11px;color:#10b981;background:rgba(16,185,129,.12);padding:4px 10px;border-radius:8px;';
+      t.textContent='🔗 云端同步 · 演示数据模式'; document.body.appendChild(t);
+    }
+  }
+
+  showStatus();
+  setTimeout(loadAll, 500);
+  setTimeout(loadAll, 1800);
+  setInterval(loadAll, 5000); /* 多人共享：定期拉取他人修改 */
+})();
+</script>
+
+</body>
+</html>
