@@ -912,17 +912,6 @@ $('loginPassword').addEventListener('keydown', function(e) {
         localStorage.setItem('dcai_users', JSON.stringify(us));
       }
     }catch(e){}
-    setTimeout(function(){
-      var page = document.getElementById('loginPage');
-      if(page && !document.getElementById('localModeBar')){
-        var bar = document.createElement('div');
-        bar.id = 'localModeBar';
-        bar.style.cssText = 'margin:10px 14px;padding:10px 14px;border-radius:10px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;font-size:12px;line-height:1.7;text-align:left;';
-        bar.innerHTML = '当前为 <b>静态演示模式</b>：界面功能可完整浏览，注册/登录/云端数据需部署后端服务后可用。';
-        var card = page.querySelector('.login-card');
-        if(card){ page.insertBefore(bar, card); } else { page.insertBefore(bar, page.firstChild); }
-      }
-    }, 400);
   }
   fetch('/api/health', { method:'GET' }).then(function(r){
     /* Cloudflare Pages 的 SPA 兜底会对任意路径返回 200+HTML，须校验返回体确为后端 JSON */
