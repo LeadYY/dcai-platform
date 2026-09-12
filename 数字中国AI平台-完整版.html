@@ -925,8 +925,9 @@ $('loginPassword').addEventListener('keydown', function(e) {
     }, 400);
   }
   fetch('/api/health', { method:'GET' }).then(function(r){
-    if(!r.ok){ downgradeToLocal(); }
-  }).catch(function(){ downgradeToLocal(); });
+    /* Cloudflare Pages 的 SPA 兜底会对任意路径返回 200+HTML，须校验返回体确为后端 JSON */
+    return r.json().then(function(j){ return !!(j && j.ok === true); }).catch(function(){ return false; });
+  }).then(function(ok){ if(!ok){ downgradeToLocal(); } }).catch(function(){ downgradeToLocal(); });
 
   function remoteSet(key, data){
     if(window.__REMOTE_DOWNGRADED) return;
