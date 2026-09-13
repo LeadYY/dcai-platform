@@ -1,38 +1,31 @@
-async function hashPassword(password, salt) {
-  const data = new TextEncoder().encode(salt + password);
-  const hash = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-function randomToken() {
-  const arr = new Uint8Array(32);
-  crypto.getRandomValues(arr);
-  return Array.from(arr).map(b => b.toString(16).padStart(2, "0")).join("");
-}
+import {
+  ensureSchema, verifyPassword, createSession, publicUser,
+  json, sessionCookie, rateLimit, clientIp,
+} from '../../lib/auth.js';
 
 export async function onRequestPost(context) {
   const { request, env } = context;
-  const { email, password } = await request.json();
+  try {
+    await ensureSchema(env);
+    const { email, password } = await request.json();
+    if (!email || !password) return json({ error: '邮箱和密码不能为空' }, 400);
 
-  const db = env.DB;
-  const user = await db.prepare("SELECT * FROM users WHERE email = ?").bind(email).first();
-
-  if (!user) {
-    return Response.json({ error: "邮箱未注册" }, { status: 401 });
-  }
-
-  const hash = await hashPassword(password, user.salt);
-  if (hash !== user.password_hash) {
-    return Response.json({ error: "密码错误" }, { status: 401 });
-  }
-
-  const token = randomToken();
-  await db.prepare("INSERT INTO sessions (token, user_id) VALUES (?, ?)").bind(token, user.id).run();
-
-  return new Response(JSON.stringify({ email: user.email }), {
-    headers: {
-      "Content-Type": "application/json",
-      "Set-Cookie": `session=${token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=604800`
+    if (!rateLimit('alogin:' + clientIp(request), 8, 60000)) {
+      return json({ error: '尝试过于频繁，请稍后再试' }, 429);
     }
-  });
+
+    const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first();
+    if (!user) return json({ error: '邮箱未注册' }, 401);
+    if (user.status === 'disabled') return json({ error: '账号已被禁用' }, 403);
+
+    const ok = await verifyPassword(user, String(password));
+    if (!ok) return json({ error: '密码错误' }, 401);
+
+    const token = await createSession(env, user.id);
+    return json({ ok: true, email: user.email, user: publicUser(user) }, 200, {
+      'Set-Cookie': sessionCookie(token),
+    });
+  } catch (e) {
+    return json({ error: '登录失败，请稍后重试' }, 500);
+  }
 }

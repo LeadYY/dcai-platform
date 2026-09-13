@@ -1,0 +1,23 @@
+{
+  "name": "repo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeadYY/dcai-platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeadYY/dcai-platform/issues"
+  },
+  "homepage": "https://github.com/LeadYY/dcai-platform#readme",
+  "devDependencies": {
+    "wrangler": "^4.131.1"
+  }
+}

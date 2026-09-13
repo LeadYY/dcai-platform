@@ -1,15 +1,11 @@
-export async function onRequestGet(context) {
-  const { request, env } = context;
-  const cookies = request.headers.get("Cookie") || "";
-  const match = cookies.match(/session=([a-f0-9]+)/);
-  if (!match) {
-    return Response.json({ user: null }, { status: 401 });
+import { getSessionUser, publicUser, json } from '../../lib/auth.js';
+
+export async function onRequest(context) {
+  try {
+    const u = await getSessionUser(context.request, context.env);
+    if (!u) return json({ user: null }, 401);
+    return json({ user: { email: u.email, ...publicUser(u) } });
+  } catch (e) {
+    return json({ user: null }, 401);
   }
-  const row = await env.DB.prepare(
-    "SELECT u.email FROM sessions s JOIN users u ON s.user_id = u.id WHERE s.token = ?"
-  ).bind(match[1]).first();
-  if (!row) {
-    return Response.json({ user: null }, { status: 401 });
-  }
-  return Response.json({ user: { email: row.email } });
 }

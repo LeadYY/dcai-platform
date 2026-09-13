@@ -457,7 +457,7 @@ table.data-table { width:100%; border-collapse: collapse; font-size:13px; min-wi
     <div id="smsCode" class="field hidden"><label>短信验证码</label><input id="loginCode" placeholder="请输入验证码"></div>
     <div id="wxField" class="field hidden"><label>微信扫码登录</label><div style="height:120px;border:1px dashed var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:13px;background:#FAFBFC;">模拟微信授权二维码（演示）</div></div>
     <button class="btn btn-primary" style="width:100%;" id="loginBtn">登 录</button>
-    <div class="login-hint">演示管理员账号 <b>admin</b> / 密码 <b>123456</b></div>
+    <div class="login-hint">请使用管理员账号密码登录</div>
   </div>
 </div>
 
@@ -2231,33 +2231,30 @@ function router(){
 }
 window.addEventListener('hashchange', router);
 
-/* ---------- 登录 ---------- */
-function doLogin(){
-  var mode = document.querySelector('.mode-tab.active').dataset.mode;
-  var ok = false;
-  var acct = '';
-  if(mode==='pwd'){
-    var u = $('loginUser').value.trim(), p = $('loginPwd').value;
-    acct = u;
-    ok = (u==='admin' && p==='123456');
-    if(!ok && (u==='H' && p==='123456')) ok = true;
-  } else if(mode==='sms'){
-    var ph = $('loginPhone').value.trim(), code = $('loginCode').value.trim();
-    acct = ph;
-    ok = /^1\d{10}$/.test(ph) && code==='123456';
-  } else {
-    acct = 'wechat';
-    ok = true;
-  }
-  if(!ok){ toast('账号或验证信息错误，请重试','err'); logLogin(acct, '失败', mode==='pwd'?'密码':mode==='sms'?'短信':'微信'); return; }
-  logLogin(acct, '成功', mode==='pwd'?'密码':mode==='sms'?'短信':'微信');
-  $('loginPage').classList.add('hidden');
-  $('app').classList.remove('hidden');
-  var name = mode==='sms' ? ($('loginPhone').value.slice(-4)+' 管理员') : (mode==='wx' ? '微信管理员' : '超级管理员');
-  $('adminName').textContent = name;
-  $('avatar').textContent = name.slice(0,1);
-  toast('欢迎回来，'+name);
-  router();
+/* ---------- 登录（P1：走服务端校验，不再硬编码口令） ---------- */
+async function doLogin(){
+  var u = $('loginUser') ? $('loginUser').value.trim() : '';
+  var p = $('loginPwd') ? $('loginPwd').value : '';
+  var mode = document.querySelector('.mode-tab.active');
+  mode = mode ? mode.dataset.mode : 'pwd';
+  if(mode!=='pwd'){ toast('请使用密码登录（短信/微信登录即将接入）','err'); return; }
+  if(!u || !p){ toast('请输入管理员账号和密码','err'); return; }
+  try{
+    var r = await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({account:u,password:p})});
+    var res = await r.json();
+    if(!res.ok){ toast(res.error||'账号或密码错误','err'); logLogin(u,'失败','密码'); return; }
+    try{ localStorage.setItem('dc_token', res.token||''); }catch(e){}
+    var me = await fetch('/api/me',{headers:{'x-auth-token':res.token||''}}).then(function(x){return x.json();});
+    if(!me || !me.ok || !me.user || me.user.role!=='admin'){ toast('该账号不是管理员，无权进入管理端','err'); logLogin(u,'失败','权限'); return; }
+    logLogin(u,'成功','密码');
+    $('loginPage').classList.add('hidden');
+    $('app').classList.remove('hidden');
+    var name = me.user.nick || '超级管理员';
+    $('adminName').textContent = name;
+    $('avatar').textContent = String(name).slice(0,1);
+    toast('欢迎回来，'+name);
+    router();
+  }catch(e){ toast('无法连接服务器，请稍后重试','err'); }
 }
 function doLogout(){
   $('app').classList.add('hidden');

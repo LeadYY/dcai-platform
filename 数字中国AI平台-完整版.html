@@ -1,4 +1,4 @@
-STEP2 anchor MISS STEP1 anchor MISS <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -736,15 +736,8 @@ $('loginPassword').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doLogin();
 });
 
-// ===== 离线版：免登录，直接以超级管理员进入 =====
-(function(){
-  try{
-    localStorage.setItem('dcai_session', JSON.stringify({
-      username: 'H', role: 'admin', nick: '超级管理员'
-    }));
-    try{ localStorage.setItem('dc_token', 'offline_' + Date.now()); }catch(e){}
-  }catch(e){}
-})();
+// ===== 线上版：必须通过 /api/login 真实登录，不再自动注入超管 =====
+// （本地 file:// 离线演示时仍走 localStorage 演示账号，不受影响）
 
 // ===== Init - check session on load =====
 (function() {
