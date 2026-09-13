@@ -512,6 +512,10 @@ table.data-table { width:100%; border-collapse: collapse; font-size:13px; min-wi
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
         订单与结算
       </a>
+      <a class="nav-item" data-route="users" href="#/users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        用户管理
+      </a>
       <div class="nav-group">系统</div>
       <a class="nav-item" data-route="admins" href="#/admins">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
@@ -2199,9 +2203,74 @@ function renderLogs(){
 }
 
 /* =====================================================================
+ * 用户管理（真实数据库）：列表 / 改角色 / 封号解封
+ * ===================================================================== */
+var _uList = [];
+async function renderUsers(){
+  setPage('用户管理','注册用户 · 角色分配 · 封号');
+  $('content').innerHTML = '<div class="card"><div class="card-body"><p>加载中...</p></div></div>';
+  try{
+    var r = await fetch('/api/users',{headers:{ 'x-auth-token': localStorage.getItem('dc_token')||'' }});
+    var list = await r.json();
+    if(!Array.isArray(list)) list = [];
+    _uList = list;
+    var rows = list.map(function(u){
+      var roleBadge = {admin:'<span class="badge badge-f">管理员</span>', merchant:'<span class="badge badge-g">商家</span>', partner:'<span class="badge badge-o">合作伙伴</span>', user:'<span class="badge">普通用户</span>'}[u.role] || u.role;
+      var statusBadge = u.status==='disabled' ? '<span class="badge badge-o">已封号</span>' : '<span class="badge badge-g">正常</span>';
+      var roleSel = '<select onchange="changeRole('+u.id+', this.value)" style="padding:4px 8px;border:1px solid #E5E7EB;border-radius:6px;font-size:12px;">'
+        + ['user','merchant','partner','admin'].map(function(rr){
+            return '<option value="'+rr+'"'+(u.role===rr?' selected':'')+'>'+({user:'普通用户',merchant:'商家',partner:'合作伙伴',admin:'管理员'}[rr])+'</option>';
+          }).join('')
+        + '</select>';
+      var statusBtn = u.status==='disabled'
+        ? '<button class="btn btn-ghost" onclick="changeStatus('+u.id+',\'active\')">解封</button>'
+        : '<button class="btn btn-danger" onclick="changeStatus('+u.id+',\'disabled\')">封号</button>';
+      return '<tr>'
+        + '<td class="cell-main">'+esc(u.nick||u.username)+'<div class="cell-sub">'+esc(u.username)+'</div></td>'
+        + '<td>'+esc(u.phone||'-')+'</td>'
+        + '<td>'+roleBadge+' '+roleSel+'</td>'
+        + '<td>'+statusBadge+'</td>'
+        + '<td class="cell-sub">'+esc(u.createdAt||'-')+'</td>'
+        + '<td>'+statusBtn+'</td>'
+        + '</tr>';
+    }).join('');
+    $('content').innerHTML =
+      '<div class="card"><div class="card-head"><div class="card-title">全部用户（'+list.length+'）</div><div class="card-sub">改角色即时生效；封号后该账号无法登录</div><div class="card-actions"><button class="btn btn-ghost" onclick="renderUsers()">刷新</button></div></div>'
+      + '<div class="table-wrap"><table class="data-table"><thead><tr><th>昵称/账号</th><th>手机号</th><th>角色</th><th>状态</th><th>注册时间</th><th>操作</th></tr></thead><tbody>'
+      + (rows || '<tr><td colspan="6" style="text-align:center;color:#999;padding:30px;">暂无用户</td></tr>')
+      + '</tbody></table></div></div>';
+  }catch(e){
+    $('content').innerHTML = '<div class="card"><div class="card-body" style="color:var(--red-err);">加载失败：'+esc(e.message||e)+'</div></div>';
+  }
+}
+async function changeRole(uid, role){
+  var u = _uList.find(function(x){return x.id===uid;});
+  if(!u) return;
+  if(!confirm('将用户「'+(u.nick||u.username)+'」的角色改为：'+({user:'普通用户',merchant:'商家',partner:'合作伙伴',admin:'管理员'}[role]||role)+'？')) return;
+  try{
+    var r = await fetch('/api/user/update',{method:'POST',headers:{'Content-Type':'application/json','x-auth-token':localStorage.getItem('dc_token')||''},body:JSON.stringify({username:u.username, role:role})});
+    var res = await r.json();
+    if(res.ok){ toast('角色已更新'); renderUsers(); }
+    else { toast(res.error||'操作失败','err'); }
+  }catch(e){ toast('网络错误','err'); }
+}
+async function changeStatus(uid, status){
+  var u = _uList.find(function(x){return x.id===uid;});
+  if(!u) return;
+  var act = status==='disabled' ? '封号' : '解封';
+  if(!confirm('确认'+act+'用户「'+(u.nick||u.username)+'」？')) return;
+  try{
+    var r = await fetch('/api/user/update',{method:'POST',headers:{'Content-Type':'application/json','x-auth-token':localStorage.getItem('dc_token')||''},body:JSON.stringify({username:u.username, status:status})});
+    var res = await r.json();
+    if(res.ok){ toast(act+'成功'); renderUsers(); }
+    else { toast(res.error||'操作失败','err'); }
+  }catch(e){ toast('网络错误','err'); }
+}
+
+/* =====================================================================
  * 路由 / 标题 / 登录 / 初始化
  * ===================================================================== */
-var ROUTES = { dashboard:'仪表板', students:'OPC学员管理', communities:'社区管理', supply:'供应链管理', partners:'合作伙伴管理', review:'商品审核工作台', content:'内容审核', orders:'订单与结算', accounts:'账号绑定管理', admins:'管理员与角色', notices:'公告中心', alerts:'告警中心', security:'安全中心', permissions:'端口权限管理', logs:'操作日志' };
+var ROUTES = { dashboard:'仪表板', students:'OPC学员管理', communities:'社区管理', supply:'供应链管理', partners:'合作伙伴管理', review:'商品审核工作台', content:'内容审核', orders:'订单与结算', users:'用户管理', accounts:'账号绑定管理', admins:'管理员与角色', notices:'公告中心', alerts:'告警中心', security:'安全中心', permissions:'端口权限管理', logs:'操作日志' };
 function setPage(title, sub){
   $('pageTitle').textContent = title;
   $('pageSub').textContent = sub;
