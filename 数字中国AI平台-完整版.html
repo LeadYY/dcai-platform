@@ -292,6 +292,11 @@ body {
             <input class="login-input" id="regCode" placeholder="验证码" maxlength="6" inputmode="numeric" style="flex:1;min-width:0;width:auto;">
             <button type="button" class="login-btn" id="sendCodeBtn" onclick="sendSmsCode()" style="flex:0 0 auto;width:auto;padding:0 16px;font-size:13px;white-space:nowrap;margin-bottom:14px;">获取验证码</button>
           </div>
+          <select class="login-input" id="regRole" style="appearance:auto;background:#fff;">
+            <option value="user">OPC 用户端（买家/创作者）</option>
+            <option value="merchant">供应链商家端（供应商）</option>
+            <option value="partner">合作伙伴端（生态合作方）</option>
+          </select>
         </div>
         <button class="login-btn" id="loginSubmitBtn" onclick="doLogin()">登 录</button>
         <div class="login-switch" id="loginSwitchText">
@@ -505,7 +510,9 @@ function doLogin() {
 
         if (window.__remoteRegister) {
             /* 服务器模式：注册写入云端用户表，注册即登录 */
-            window.__remoteRegister(nick, password, phone, code, window._dcInviteRef || '').then(function(res){
+            var roleSel = $('regRole');
+            var chosenRole = roleSel ? roleSel.value : 'user';
+            window.__remoteRegister(nick, password, phone, code, window._dcInviteRef || '', chosenRole).then(function(res){
                 if (res.ok && res.user) {
                     setSession(res.user);
                     showApp(res.user);
@@ -559,13 +566,22 @@ function showApp(user) {
     $('headerNick').textContent = user.nick;
 
     // Build tabs based on role
-    var tabs = [
-        { id: 'opc', label: 'OPC 工作台' },
-        { id: 'trade', label: '交易商城' },
-        { id: 'supply', label: '商家供应链端' },
-        { id: 'coop', label: '合作伙伴端' },
-        { id: 'dash', label: '数据大屏' }
-    ];
+    var tabs = [];
+    // 所有人都能看 OPC 工作台和数据大屏
+    tabs.push({ id: 'opc', label: 'OPC 工作台' });
+    // 普通用户/买家 看商城
+    if (user.role === 'user' || user.role === 'admin') {
+        tabs.push({ id: 'trade', label: '交易商城' });
+    }
+    // 商家看供应链端
+    if (user.role === 'merchant' || user.role === 'admin') {
+        tabs.push({ id: 'supply', label: '商家供应链端' });
+    }
+    // 合作伙伴看合作伙伴端
+    if (user.role === 'partner' || user.role === 'admin') {
+        tabs.push({ id: 'coop', label: '合作伙伴端' });
+    }
+    tabs.push({ id: 'dash', label: '数据大屏' });
     if (user.role === 'admin') {
         tabs.push({ id: 'admin', label: 'AI 超级管理员' });
     }
@@ -602,12 +618,18 @@ function showApp(user) {
     var cardGrid = $('brandCardGrid');
     cardGrid.innerHTML = '';
     var cards = [
-        { id: 'opc', icon: '🏪', title: 'OPC用户端', desc: '内容创作者工作台，AI驱动的商业操作系统' },
-        { id: 'supply', icon: '📦', title: '供应链商家端', desc: '供应商管理后台，商品上架与订单处理' },
-        { id: 'trade', icon: '🛒', title: '买家端（交易商城）', desc: '一站式智能交易平台，全品类商品选购' },
-        { id: 'coop', icon: '🤝', title: '合作伙伴端', desc: '数字中国AI生态资源连接器，合作、资源、需求、项目一站式管理' },
-        { id: 'dash', icon: '📊', title: '数据大屏', desc: '数字中国全球业务数据大屏，多平台经营数据一屏可视' }
+        { id: 'opc', icon: '🏪', title: 'OPC用户端', desc: '内容创作者工作台，AI驱动的商业操作系统' }
     ];
+    if (user.role === 'user' || user.role === 'admin') {
+        cards.push({ id: 'trade', icon: '🛒', title: '买家端（交易商城）', desc: '一站式智能交易平台，全品类商品选购' });
+    }
+    if (user.role === 'merchant' || user.role === 'admin') {
+        cards.push({ id: 'supply', icon: '📦', title: '供应链商家端', desc: '供应商管理后台，商品上架与订单处理' });
+    }
+    if (user.role === 'partner' || user.role === 'admin') {
+        cards.push({ id: 'coop', icon: '🤝', title: '合作伙伴端', desc: '数字中国AI生态资源连接器，合作、资源、需求、项目一站式管理' });
+    }
+    cards.push({ id: 'dash', icon: '📊', title: '数据大屏', desc: '数字中国全球业务数据大屏，多平台经营数据一屏可视' });
     if (user.role === 'admin') {
         cards.push({ id: 'admin', icon: '⚙️', title: '超级管理员端', desc: 'AI超级管理员后台，全局数据与系统配置' });
     }
@@ -943,12 +965,12 @@ $('loginPassword').addEventListener('keydown', function(e) {
   };
 
   /* 注册：同步到服务器用户表，注册即登录 */
-  window.__remoteRegister = function(nick, password, phone, code, referrer){
+  window.__remoteRegister = function(nick, password, phone, code, referrer, role){
     if(!nick || !password || !phone || !code) return Promise.resolve({ok:false, error:"昵称、密码、手机号、验证码均为必填"});
     return fetch("/api/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ nick: nick, password: password, phone: phone, code: code, referrer: referrer || '' })
+      body: JSON.stringify({ nick: nick, password: password, phone: phone, code: code, referrer: referrer || '', role: role || 'user' })
     }).then(function(r){ return r.json(); }).then(function(res){
       if(res && res.ok && res.token){
         try{ localStorage.setItem("dc_token", res.token); }catch(e){}

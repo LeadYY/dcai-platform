@@ -9,12 +9,16 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   try {
     await ensureSchema(env);
-    const { nick, password, phone, code, referrer } = await request.json();
+    const { nick, password, phone, code, referrer, role } = await request.json();
 
     if (!nick || !password || !phone) return json({ ok: false, error: '昵称、密码、手机号均为必填' }, 400);
     if (String(nick).length < 2 || String(nick).length > 20) return json({ ok: false, error: '昵称长度需为 2-20 个字符' }, 400);
     if (String(password).length < 6) return json({ ok: false, error: '密码至少 6 位' }, 400);
     if (!PHONE_RE.test(String(phone))) return json({ ok: false, error: '手机号格式不正确' }, 400);
+
+    // 注册时自选角色白名单；任何人不能通过注册直接成为 admin（admin 由首个账号自动获得，或由现有 admin 后台提升）
+    const allowedSelfRoles = ['user', 'merchant', 'partner'];
+    const chosenRole = allowedSelfRoles.includes(role) ? role : 'user';
 
     const rlKey = 'reg:' + clientIp(request);
     if (!rateLimit(rlKey, 5, 3600000)) {
@@ -52,7 +56,7 @@ export async function onRequestPost(context) {
     await env.DB.prepare(
       `INSERT INTO users (username, nick, phone, password_hash, salt, role, status, referrer)
        VALUES (?, ?, ?, ?, ?, ?, 'active', ?)`
-    ).bind(username, String(nick).trim(), phone, pwHash, salt, isFirst ? 'admin' : 'user', referrer || null).run();
+    ).bind(username, String(nick).trim(), phone, pwHash, salt, isFirst ? 'admin' : chosenRole, referrer || null).run();
 
     const newUser = await env.DB.prepare(
       'SELECT * FROM users WHERE username = ?'
