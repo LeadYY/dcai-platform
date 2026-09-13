@@ -65,6 +65,6 @@ export async function onRequestPost(context) {
       'Set-Cookie': sessionCookie(token),
     });
   } catch (e) {
-    return json({ ok: false, error: '注册失败: ' + (e && e.message), stack: e && e.stack }, 500);
+    return json({ ok: false, error: '注册失败，请稍后重试' }, 500);
   }
 }

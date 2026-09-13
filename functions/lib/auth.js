@@ -3,7 +3,7 @@
 // 所有业务接口通过 getSessionUser() 识别登录用户；通过 requireRole 做权限。
 // ============================================================
 
-const PBKDF2_ITER = 120000;
+const PBKDF2_ITER = 100000;
 
 // ---------- 密码 ----------
 async function hashPassword(password, salt) {
