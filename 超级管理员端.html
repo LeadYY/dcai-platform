@@ -2887,7 +2887,7 @@ router();
     $('content').innerHTML = '<div style="padding:60px;text-align:center;color:var(--text-2);">正在加载用户列表...</div>';
     fetchUsers().then(function(list){
       if(list === null){
-        $('content').innerHTML = '<div class="card"><div class="card-body"><div class="empty"><p>无法连接服务器或未登录</p><p style="font-size:12px;color:#999;">用户管理需通过服务器模式访问，并确保已登录（H / 123456）。</p></div></div></div>';
+        $('content').innerHTML = '<div class="card"><div class="card-body"><div class="empty"><p>登录已过期，请重新登录</p><p style="font-size:12px;color:#999;">请点击右上角退出后重新登录，或直接刷新页面。</p></div></div></div>';
         return;
       }
       var kw = (userFilter.kw||'').toLowerCase();
